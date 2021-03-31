@@ -19,7 +19,7 @@ public class PageNode {
         this.mIdentifier = name;
     }
 
-    String name;
+    public String name;
     public PageNode pre;
 
     //获取节点存活的总时间

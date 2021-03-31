@@ -16,5 +16,5 @@ public class ActivityNode extends PageNode {
         super(name);
     }
 
-    List<FragmentNode> childFragments=new ArrayList<>();
+    public List<FragmentNode> childFragments=new ArrayList<>();
 }

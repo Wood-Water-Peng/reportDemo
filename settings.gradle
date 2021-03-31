@@ -1,0 +1,3 @@
+rootProject.name='ReportDemo'
+include ':app'
+include ':lib'

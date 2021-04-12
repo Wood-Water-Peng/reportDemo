@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.example.lib.EventConstants;
 import com.example.lib.ReportLog;
+import com.example.lib.event.ActivityEvent;
 import com.example.lib.event.ApplicationEvent;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -39,6 +40,11 @@ public class EventGatherModule {
                     ApplicationEvent event = new ApplicationEvent.Builder().setTag(EventConstants.APPLICATION_EVENT_ON_RESUMED).setPackageName(activity.getApplication().getPackageName()).setOnCreateTimeStamp(System.currentTimeMillis()).build();
                     ReportLog.logD(activity.getApplication().getPackageName() + " onResume");
                 }
+
+                ActivityEvent event = new ActivityEvent.Builder().setTag(EventConstants.ACTIVITY_EVENT_ON_RESUME).setActivityName(activity.getClass().getCanonicalName()).setOnCreateTimeStamp(System.currentTimeMillis()).build();
+                ReportLog.logD(event.getActivityName() + " onResume");
+
+
             }
 
             @Override

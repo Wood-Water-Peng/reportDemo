@@ -13,4 +13,8 @@ public interface EventConstants {
     ////应用中所有的activity已经出栈，但是进程可能存在
     String APPLICATION_EVENT_ON_DESTROY = "application_event_on_destroy";
 
+
+    //activity可见
+    String ACTIVITY_EVENT_ON_RESUME = "activity_event_on_resume";
+
 }

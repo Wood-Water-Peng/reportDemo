@@ -4,17 +4,15 @@ package com.example.lib.event;
  * @Author jacky.peng
  * @Date 2021/4/12 11:07 AM
  * @Version 1.0
- *
- * 应用级别的事件
  */
-public class ApplicationEvent extends Event {
+public class ActivityEvent extends Event {
 
-    private String packageName;
+    private String activityName;
     private long onCreateTimeStamp;
     private long onDestroyTimeStamp;
 
-    public String getPackageName() {
-        return packageName;
+    public String getActivityName() {
+        return activityName;
     }
 
     public long getOnCreateTimeStamp() {
@@ -25,12 +23,12 @@ public class ApplicationEvent extends Event {
         return onDestroyTimeStamp;
     }
 
-    public ApplicationEvent(String tag) {
+    public ActivityEvent(String tag) {
         this.tag = tag;
     }
 
     public static class Builder {
-        private String packageName;
+        private String activityName;
         private String tag;
         private long onCreateTimeStamp;
         private long onDestroyTimeStamp;
@@ -40,8 +38,8 @@ public class ApplicationEvent extends Event {
             return this;
         }
 
-        public Builder setPackageName(String packageName) {
-            this.packageName = packageName;
+        public Builder setActivityName(String activityName) {
+            this.activityName = activityName;
             return this;
         }
 
@@ -55,9 +53,9 @@ public class ApplicationEvent extends Event {
             return this;
         }
 
-        public ApplicationEvent build() {
-            ApplicationEvent event = new ApplicationEvent(this.tag);
-            event.packageName = this.packageName;
+        public ActivityEvent build() {
+            ActivityEvent event = new ActivityEvent(this.tag);
+            event.activityName = this.activityName;
             event.onCreateTimeStamp = this.onCreateTimeStamp;
             event.onDestroyTimeStamp = this.onDestroyTimeStamp;
             return event;

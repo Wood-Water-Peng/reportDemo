@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.example.event_gather_lib.ClickDelegate;
 import com.example.lib.FloatingAssitView;
 import com.example.lib.PathInfoActivity;
 import com.example.lib.event.PageLifeCycleEvent;
@@ -116,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        new ClickDelegate(getWindow().getDecorView());
     }
 
     @Override

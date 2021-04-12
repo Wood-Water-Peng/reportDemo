@@ -67,7 +67,7 @@ public class FloatingService extends Service {
         layoutParams.y = 200;
         layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         layoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        windowManager.addView(floatingAssitView, layoutParams);
+//        windowManager.addView(floatingAssitView, layoutParams);
 
         floatingAssitView.setOnClickListener(new View.OnClickListener() {
             @Override

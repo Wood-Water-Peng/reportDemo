@@ -17,4 +17,7 @@ public interface EventConstants {
     //activity可见
     String ACTIVITY_EVENT_ON_RESUME = "activity_event_on_resume";
 
+    //view点击事件
+    String VIEW_ON_CLICK_EVENT = "view_on_click_event";
+
 }

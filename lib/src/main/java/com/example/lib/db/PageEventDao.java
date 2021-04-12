@@ -3,6 +3,8 @@ package com.example.lib.db;
 import com.example.lib.bean.PageEventWrapper;
 import com.example.lib.event.PageEvent;
 
+import java.util.List;
+
 /**
  * @Author jacky.peng
  * @Date 2021/3/18 7:29 PM
@@ -14,6 +16,9 @@ public interface PageEventDao {
 
     //插入到表的末位行
     void insertEvent(PageEvent event);
+
+
+    void insertEventList(List<PageEvent> event);
 
     void deleteEvent(String eventId);
 

@@ -7,7 +7,7 @@ import com.example.lib.core.ReportHandler;
  * @Date 2021/3/18 4:10 PM
  * @Version 1.0
  */
-public class PageEvent {
+public class PageEvent extends Event{
     public String name;
     public String id;
     String tag;
@@ -34,6 +34,6 @@ public class PageEvent {
     }
 
     public void report() {
-//        ReportHandler.getInstance().getReportEngine().reportEvent(this, 0);
+        ReportHandler.getInstance().getReportEngine().reportEvent(this, 0);
     }
 }

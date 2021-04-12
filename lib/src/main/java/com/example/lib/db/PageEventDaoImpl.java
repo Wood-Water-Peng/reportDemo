@@ -1,8 +1,11 @@
 package com.example.lib.db;
 
+import android.util.Log;
+
 import com.example.lib.ReportLog;
 import com.example.lib.bean.PageEventWrapper;
 import com.example.lib.event.PageEvent;
+import com.example.lib.executor.JobExecutors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,17 +32,31 @@ public class PageEventDaoImpl implements PageEventDao {
 
     @Override
     public void insertEvent(PageEvent event) {
-        fakeData.add(event);
+//        fakeData.add(event);
+    }
+
+    @Override
+    public void insertEventList(List<PageEvent> event) {
+        ReportLog.logD("pre insertEventList size->" + event);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ReportLog.logD("finish insertEventList size->" + event);
+
+        //在完成数据插入后，需要考虑是否去触发上报的操作
     }
 
     @Override
     public void deleteEvent(String eventId) {
         for (int i = 0; i < fakeData.size(); i++) {
-            PageEvent pageEvent = fakeData.get(i);
-            if (pageEvent.getId().equals(eventId)) {
-                fakeData.remove(pageEvent);
-                ReportLog.logD("deleteEvent->"+pageEvent.getId());
-            }
+//            PageEvent pageEvent = fakeData.get(i);
+//            if (pageEvent.getId().equals(eventId)) {
+//                fakeData.remove(pageEvent);
+//                ReportLog.logD("deleteEvent->" + pageEvent.getId());
+//            }
         }
     }
 
@@ -53,7 +70,7 @@ public class PageEventDaoImpl implements PageEventDao {
         //要被删除的event
         StringBuilder sb = new StringBuilder();
         List<String> toBeDeleteEvent = new ArrayList<>();
-        int count=Math.min(size,fakeData.size());
+        int count = Math.min(size, fakeData.size());
         for (int i = 0; i < count; i++) {
             //取出每一行数据
             PageEvent pageEvent = fakeData.get(i);
@@ -67,7 +84,7 @@ public class PageEventDaoImpl implements PageEventDao {
         //生成有效的wrapper数据
         PageEventWrapper pageEventWrapper = new PageEventWrapper(toBeDeleteEvent.size(), sb.toString());
         //删除数据库中的标记数据
-         for (int i = 0; i < toBeDeleteEvent.size(); i++) {
+        for (int i = 0; i < toBeDeleteEvent.size(); i++) {
             deleteEvent(toBeDeleteEvent.get(i));
         }
         return pageEventWrapper;

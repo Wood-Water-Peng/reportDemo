@@ -2,6 +2,7 @@ package com.example.reportdemo;
 
 import android.app.Application;
 
+import com.example.event_gather_lib.EventGatherModule;
 import com.example.lib.ActivityLifecycleTracker;
 import com.example.lib.core.ReportHandler;
 
@@ -18,5 +19,11 @@ public class MyApplication extends Application {
         ActivityLifecycleTracker activityLifecycleTracker = new ActivityLifecycleTracker(this);
         activityLifecycleTracker.startTrack();
 
+
+        //采集事件模块
+        EventGatherModule eventGatherModule = new EventGatherModule();
+        eventGatherModule.onCreate(this);
     }
+
+
 }

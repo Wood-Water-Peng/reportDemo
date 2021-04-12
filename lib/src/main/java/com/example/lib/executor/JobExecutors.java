@@ -10,10 +10,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by silverfu on 2018/8/20.
- */
-/* package */ class JobExecutors {
+
+public class JobExecutors {
 
     private final Executor mDiskIO;
 
@@ -21,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
     private final Executor mMainThread;
 
-    private static class JobHodler {
+    public static class JobHolder {
         public static final JobExecutors INSTANCE = new JobExecutors();
     }
 

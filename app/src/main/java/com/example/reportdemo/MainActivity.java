@@ -17,6 +17,13 @@ import android.widget.Button;
 
 import com.example.lib.FloatingAssitView;
 import com.example.lib.PathInfoActivity;
+import com.example.lib.event.PageLifeCycleEvent;
+import com.example.lib.event.PageOnCreateEvent;
+import com.example.lib.event.PageOnDestroyEvent;
+
+import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static android.content.Context.WINDOW_SERVICE;
 import static android.os.Looper.getMainLooper;
@@ -26,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private FragmentA fragmentA;
     private FragmentB fragmentB;
     private Intent intent;
+
+    AtomicInteger reportNum = new AtomicInteger(1000);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +99,23 @@ public class MainActivity extends AppCompatActivity {
 
         intent = new Intent(this, FloatingService.class);
         startService(intent);
+
+
+        Executors.newSingleThreadExecutor().submit(new Runnable() {
+            @Override
+            public void run() {
+                while (reportNum.get() > 0) {
+                    Random random = new Random(100);
+                    boolean aBoolean = random.nextBoolean();
+                    long timeMillis = System.currentTimeMillis();
+                    if (aBoolean) {
+                        new PageLifeCycleEvent("test", "" + timeMillis).report();
+                    } else {
+                        new PageOnCreateEvent("test", "" + timeMillis).report();
+                    }
+                }
+            }
+        });
     }
 
     @Override

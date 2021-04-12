@@ -1,3 +1,4 @@
 rootProject.name='ReportDemo'
 include ':app'
 include ':lib'
+include ':event_gather_lib'

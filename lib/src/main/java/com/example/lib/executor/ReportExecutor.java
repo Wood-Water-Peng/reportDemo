@@ -40,10 +40,11 @@ public class ReportExecutor {
 
     public void enqueueEvent(final PageEvent event) {
         if (pendingEvents.size() > PENDING_THRESHOLD) {
-
+//            ReportLog.logD("enqueueEvent:" + event.name + "---超过阈值:" + pendingEvents.size());
+            //将缓冲队列中的数据打包，插入数据库中
         } else {
             pendingEvents.add(event);
-            ReportLog.logD("enqueueEvent:" + event.name + "---当前容量:" + pendingEvents.size());
+//            ReportLog.logD("enqueueEvent:" + event.name + "---当前容量:" + pendingEvents.size());
         }
         mExecutors.diskIO().execute(new Runnable() {
 
@@ -71,7 +72,7 @@ public class ReportExecutor {
                 //根据count生成request
                 for (int i = 0; i < count; i++) {
                     PageEventWrapper pageEventWrapper = mEventDao.generateWrapperFromDB(DEFAULT_REPORT_NUM);
-                    ReportLog.logD("上报数据->" + pageEventWrapper.getNum());
+//                    ReportLog.logD("上报数据->" + pageEventWrapper.getNum());
                     boolean request = new ReportRequest(pageEventWrapper).performRequest();
                 }
             }

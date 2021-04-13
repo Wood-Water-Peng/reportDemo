@@ -25,9 +25,12 @@ import com.example.event_gather_lib.ClickDelegate;
 import com.example.event_gather_lib.RecyclerViewExposureListener;
 import com.example.lib.FloatingAssitView;
 import com.example.lib.PathInfoActivity;
+import com.example.lib.ViewUtil;
 import com.example.lib.event.PageLifeCycleEvent;
 import com.example.lib.event.PageOnCreateEvent;
 import com.example.lib.event.PageOnDestroyEvent;
+import com.example.lib.event.ViewClickEvent;
+import com.example.lib.event.ViewExposureEvent;
 
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -160,7 +163,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void exposureView(View view, int index) {
-
+                String viewPath = ViewUtil.getViewPath(view);
+                ViewExposureEvent event = new ViewExposureEvent.Builder().setActivityName(view.getContext().getClass().getCanonicalName()).setViewPath(viewPath).build();
+                event.report();
             }
         });
 

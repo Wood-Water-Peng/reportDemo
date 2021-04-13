@@ -98,7 +98,7 @@ public abstract class RecyclerViewExposureListener extends RecyclerView.OnScroll
             return;
         }
         if (getVerticalExposurePercentage(viewByPosition) > 50) {
-            ReportLog.logD("exposureView index->" + index);
+//            ReportLog.logD("exposureView index->" + index);
             exposureView(viewByPosition, index);
         }
 

@@ -1,7 +1,11 @@
 package com.example.reportdemo;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,10 +16,13 @@ import android.os.Handler;
 import android.os.MessageQueue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.event_gather_lib.ClickDelegate;
+import com.example.event_gather_lib.RecyclerViewExposureListener;
 import com.example.lib.FloatingAssitView;
 import com.example.lib.PathInfoActivity;
 import com.example.lib.event.PageLifeCycleEvent;
@@ -36,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private Intent intent;
 
     AtomicInteger reportNum = new AtomicInteger(1000);
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         intent = new Intent(this, FloatingService.class);
-        startService(intent);
+//        startService(intent);
 
 
         Executors.newSingleThreadExecutor().submit(new Runnable() {
@@ -119,6 +127,46 @@ public class MainActivity extends AppCompatActivity {
         });
 
         new ClickDelegate(getWindow().getDecorView());
+
+        recyclerView = findViewById(R.id.recycle_view);
+        recyclerView.setAdapter(new RecyclerView.Adapter() {
+            @NonNull
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                TextView textView = new TextView(MainActivity.this);
+                textView.setBackgroundColor(Color.YELLOW);
+                RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, 100);
+                params.bottomMargin = 10;
+                textView.setGravity(Gravity.CENTER);
+                textView.setLayoutParams(params);
+                RecyclerView.ViewHolder viewHolder = new RecyclerView.ViewHolder(textView) {
+                };
+                return viewHolder;
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+                TextView textView = (TextView) holder.itemView;
+                textView.setText(position+"");
+            }
+
+            @Override
+            public int getItemCount() {
+                return 100;
+            }
+        });
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.addOnScrollListener(new RecyclerViewExposureListener() {
+
+            @Override
+            public void exposureView(View view, int index) {
+
+            }
+        });
+
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL){
+
+        });
     }
 
     @Override

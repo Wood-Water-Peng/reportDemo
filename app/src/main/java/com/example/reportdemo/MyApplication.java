@@ -15,7 +15,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        ReportHandler.getInstance().init();
+        ReportHandler.getInstance().init(this);
         ActivityLifecycleTracker activityLifecycleTracker = new ActivityLifecycleTracker(this);
         activityLifecycleTracker.startTrack();
 

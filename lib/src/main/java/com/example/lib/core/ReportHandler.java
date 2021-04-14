@@ -1,9 +1,13 @@
 package com.example.lib.core;
 
+import android.content.Context;
+
 import com.example.lib.EventReportEngine;
 import com.example.lib.ReportLog;
+import com.example.lib.ReportMessageCenter;
 import com.example.lib.TrackEventManager;
 import com.example.lib.TrackEventManagerThread;
+import com.example.lib.db.EventEntity;
 import com.example.lib.event.Event;
 import com.example.lib.executor.ReportExecutor;
 
@@ -17,6 +21,7 @@ public class ReportHandler {
     //监听任务的任务
     protected TrackEventManagerThread mTrackTaskManagerThread;
     protected TrackEventManager mTrackTaskManager;
+    ReportMessageCenter messageCenter;
 
     public EventReportEngine getReportEngine() {
         return reportEngine;
@@ -35,7 +40,7 @@ public class ReportHandler {
 
     private volatile boolean _hasInit = false;
 
-    public void init() {
+    public void init(Context context) {
         if (_hasInit) {
             throw new IllegalStateException("has already inited");
         }
@@ -47,6 +52,7 @@ public class ReportHandler {
             ReportLog.logD("Data collection thread has been started");
         }
         mTrackTaskManager = TrackEventManager.getsInstance();
+        messageCenter = ReportMessageCenter.getInstance(context, this);
     }
 
     public void track(final Event event) {
@@ -62,5 +68,14 @@ public class ReportHandler {
         //1.将事件添加到数据库
 
         //2.根据数据库中当前的条目，立刻上传或者延迟20s之后执行上传任务
+
+        //3.将数据库操作和上传任务放在一个线程中执行，只有上传成功后才删除数据库的记录
+
+
+        //生成一个json格式的str,通过handler发送到子线程
+
+        EventEntity entity = new EventEntity();
+        entity.setName(event.tag);
+        messageCenter.enqueueMsg(0, entity);
     }
 }

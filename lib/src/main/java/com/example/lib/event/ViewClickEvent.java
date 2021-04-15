@@ -1,5 +1,13 @@
 package com.example.lib.event;
 
+import com.example.lib.Constants;
+import com.example.lib.PageNodeManager;
+import com.example.lib.core.ReportHandler;
+import com.example.lib.node.PageNode;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * @Author jacky.peng
  * @Date 2021/4/12 11:07 AM
@@ -80,6 +88,23 @@ public class ViewClickEvent extends Event {
             event.onDestroyTimeStamp = this.onDestroyTimeStamp;
             event.fragmentName = this.fragmentName;
             return event;
+        }
+    }
+
+    @Override
+    public void report() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(Constants.ELEMENT_PATH, viewPath);
+            PageNode headNode = PageNodeManager.getInstance().getHeadNode();
+            jsonObject.put(Constants.PAGE_UID, headNode.name);
+            PageNode pre = headNode.pre;
+            if (pre != null) {
+                jsonObject.put(Constants.PAGE_REFER_UID, pre.name);
+            }
+            ReportHandler.getInstance().trackViewClick(this, jsonObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 }

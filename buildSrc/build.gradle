@@ -1,0 +1,36 @@
+apply plugin: 'groovy'
+
+
+buildscript{
+    repositories {
+        mavenCentral()
+        google()
+        jcenter()
+
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    // 包含了AMS字节码注入工具
+    implementation "com.android.tools.build:gradle:3.6.3"
+    implementation gradleApi()
+}
+
+sourceSets {
+    main {
+        groovy {
+            srcDir 'src/main/groovy'
+        }
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}

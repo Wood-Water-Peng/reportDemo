@@ -13,4 +13,8 @@ public class ReportLog {
     public static void logD(String msg) {
         Log.d(TAG, msg);
     }
+
+    public static void printStackTrace(Exception e) {
+
+    }
 }

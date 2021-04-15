@@ -18,7 +18,18 @@ public class EventEntity {
     private String name;
 
     @ColumnInfo(name = "create_time")
-    private String create_time;
+    private long create_time;
+
+    @ColumnInfo(name = "data")
+    private String data;
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
 
     public int getId() {
         return id;
@@ -36,11 +47,11 @@ public class EventEntity {
         this.name = name;
     }
 
-    public String getCreate_time() {
+    public long getCreate_time() {
         return create_time;
     }
 
-    public void setCreate_time(String create_time) {
+    public void setCreate_time(long create_time) {
         this.create_time = create_time;
     }
 }

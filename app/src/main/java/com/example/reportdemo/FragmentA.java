@@ -1,11 +1,14 @@
 package com.example.reportdemo;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +17,12 @@ import android.view.ViewGroup;
 import com.example.lib.ActivityLifecycleTracker;
 import com.example.lib.BaseReportFragment;
 import com.example.lib.PageNodeManager;
+import com.example.lib.ViewUtil;
+import com.example.lib.event.ViewClickEvent;
 import com.example.reportdemo.fragments.FragmentA1;
 import com.example.reportdemo.fragments.FragmentA2;
+
+import java.util.List;
 
 
 /**
@@ -71,7 +78,22 @@ public class FragmentA extends BaseReportFragment {
                 } else {
                     getChildFragmentManager().beginTransaction().add(R.id.contenta1, fragmentA1).commit();
                 }
+                ViewClickEvent.Builder builder = new ViewClickEvent.Builder();
+                builder.setViewPath(ViewUtil.getViewPath(v));
 
+                FragmentActivity activity = (FragmentActivity) v.getContext();
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                List<Fragment> fragments = fragmentManager.getFragments();
+                for (int i = 0; i < fragments.size(); i++) {
+                    Fragment fragment = fragments.get(i);
+                    View view = fragment.getView();
+                    Rect rect = new Rect(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
+                    if (v.getLocalVisibleRect(rect)) {
+                        builder.setFragmentName(fragment.getClass().getCanonicalName());
+                        break;
+                    }
+                }
+                builder.build().report();
 
             }
         });

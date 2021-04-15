@@ -3,13 +3,19 @@ package com.example.reportdemo;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +38,7 @@ import com.example.lib.event.PageOnDestroyEvent;
 import com.example.lib.event.ViewClickEvent;
 import com.example.lib.event.ViewExposureEvent;
 
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -57,6 +64,23 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SecondActivity.class);
                 startActivity(intent);
+
+                ViewClickEvent.Builder builder = new ViewClickEvent.Builder();
+                builder.setViewPath(ViewUtil.getViewPath(v));
+
+                FragmentActivity activity = (FragmentActivity) v.getContext();
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                List<Fragment> fragments = fragmentManager.getFragments();
+                for (int i = 0; i < fragments.size(); i++) {
+                    Fragment fragment = fragments.get(i);
+                    View view = fragment.getView();
+                    Rect rect = new Rect(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
+                    if (v.getLocalVisibleRect(rect)) {
+                        builder.setFragmentName(fragment.getClass().getCanonicalName());
+                        break;
+                    }
+                }
+                builder.build().report();
             }
         });
 
@@ -150,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
                 TextView textView = (TextView) holder.itemView;
-                textView.setText(position+"");
+                textView.setText(position + "");
             }
 
             @Override
@@ -169,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL){
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) {
 
         });
     }

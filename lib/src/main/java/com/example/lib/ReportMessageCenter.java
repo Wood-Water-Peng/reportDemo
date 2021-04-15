@@ -65,7 +65,7 @@ public class ReportMessageCenter {
             ReportLog.logD("enqueueMsg error->" + cursor);
             throw new IllegalStateException("error");
         }
-        ReportLog.logD("enqueueMsg cursor->" + cursor);
+
         Message message = Message.obtain();
         message.what = UPLOAD_DATA;
         if (cursor > LIMIT) {

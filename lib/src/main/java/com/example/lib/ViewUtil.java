@@ -18,29 +18,27 @@ public class ViewUtil {
      */
     @SuppressLint("ResourceType")
     public static String getViewPath(View view) {
-        ViewParent parent = view.getParent();
         StringBuilder sb = new StringBuilder();
         View child = view;
-        while (parent != null && parent instanceof ViewGroup) {
+        ViewGroup parent;
+        while (child != null) {
             StringBuilder tmp = new StringBuilder();
             if (child.getParent() instanceof ViewGroup) {
-                ViewGroup group = (ViewGroup) child.getParent();
-                tmp.append(group.getClass().getSimpleName());
-                tmp.append("[" + group.indexOfChild(child) + "]");
+                parent = (ViewGroup) child.getParent();
+                tmp.append("/");
+                tmp.append(child.getClass().getSimpleName());
+                tmp.append("[" + parent.indexOfChild(child) + "]");
                 if (child.getId() > 0) {
                     tmp.append("#");
                     tmp.append(child.getId());
                 }
-                tmp.append("/");
+                sb.insert(0, tmp.toString());
+                child = parent;
+            }else {
+                tmp.append(child.getClass().getSimpleName());
+                sb.insert(0, tmp.toString());
+                break;
             }
-            sb.insert(0, tmp.toString());
-            child = (View) parent;
-            parent = child.getParent();
-        }
-        sb.append(view.getClass().getSimpleName());
-        if (child.getId() > 0) {
-            sb.append("#");
-            sb.append(child.getId());
         }
         return sb.toString();
     }

@@ -1,24 +1,17 @@
 package com.example.reportdemo
 
-import com.android.build.api.transform.Context
-import com.android.build.api.transform.Format
-import com.android.build.api.transform.JarInput
-import com.android.build.api.transform.QualifiedContent
-import com.android.build.api.transform.Status
-import com.android.build.api.transform.Transform
-import com.android.build.api.transform.TransformException
-import com.android.build.api.transform.TransformInput
-import com.android.build.api.transform.TransformInvocation
-import com.android.build.api.transform.TransformOutputProvider
-import com.android.build.gradle.internal.pipeline.TransformManager
+import com.android.build.api.transform.*
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.FileUtils
+import com.android.build.gradle.internal.pipeline.TransformManager
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.ClassWriter
+import groovy.io.FileType
 
-import java.util.concurrent.Callable
-import java.util.logging.Logger
-
-class TrackTransform extends Transform{
+class TrackTransform extends Transform {
     private static final String TAG = "TrackTransform";
+
     @Override
     String getName() {
         return TAG
@@ -31,7 +24,7 @@ class TrackTransform extends Transform{
 
     @Override
     Set<? super QualifiedContent.Scope> getScopes() {
-        return TransformManager.SCOPE_FULL_PROJECT;
+        return TransformManager.PROJECT_ONLY;
     }
 
     @Override
@@ -41,11 +34,59 @@ class TrackTransform extends Transform{
 
     @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
+        long startTime = System.currentTimeMillis()
         Collection<TransformInput> transformInputs = transformInvocation.getInputs();
-        for (TransformInput jarInput : transformInputs) {
+        TransformOutputProvider outputProvider= transformInvocation.getOutputProvider();
+        transformInputs.each { TransformInput input ->
             //遍历 jar
-            forEachJar(transformInvocation.incremental, jarInput, transformInvocation.outputProvider, transformInvocation.context)
+//            input.jarInputs.each { JarInput jarInput ->
+//                forEachJar(transformInvocation.incremental, jarInput,outputProvider, transformInvocation.context)
+//            }
+
+            //遍历目录
+            input.directoryInputs.each { DirectoryInput directoryInput ->
+                forEachDirectory(directoryInput, outputProvider)
+            }
         }
+
+        println("[SensorsAnalytics]: 此次编译共耗时:${System.currentTimeMillis() - startTime}毫秒")
+
+    }
+
+    void forEachDirectory(DirectoryInput directoryInput, TransformOutputProvider outputProvider) {
+        File dir = directoryInput.file
+        File dest = outputProvider.getContentLocation(directoryInput.getName(),
+                directoryInput.getContentTypes(), directoryInput.getScopes(),
+                Format.DIRECTORY)
+//        FileUtils.forceMkdir(dest)
+        String srcDirPath = dir.absolutePath
+        String destDirPath = dest.absolutePath
+//        FileUtils.copyDirectory(dir, dest)
+        println "srcDir:${dir}, desDir:${dest}"
+        //遍历目录中的所有.class文件
+        if (dir) {
+            dir.traverse(type: FileType.FILES, nameFilter: ~/.*\.class/) { File file ->
+                System.out.println("find class: " + file.name)
+
+                ClassReader classReader = new ClassReader(file.bytes)
+
+                // 对class文件的写入
+                ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
+                // 访问class文件相应的内容，解析到某一个结构就会通知到ClassVisitor的相应方法
+                ClassVisitor classVisitor = new TrackClassVisitor(classWriter)
+                // 依次调用ClassVisitor接口的各个方法
+                classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES)
+                // toByteArray方法会将最终修改的字节码以byte数组形式返回
+                byte[] bytes = classWriter.toByteArray()
+                // 通过文件流写入方式覆盖掉原先的内容，实现class文件的改写
+                FileOutputStream outputStream = new FileOutputStream(file.path)
+                outputStream.write(bytes)
+                outputStream.close()
+            }
+        }
+        // 处理完传输文件后，把输出传给下一个文件
+        FileUtils.copyDirectory(dir, dest)
+
     }
 
     void forEachJar(boolean isIncremental, JarInput jarInput, TransformOutputProvider outputProvider, Context context) {
@@ -57,36 +98,14 @@ class TrackTransform extends Transform{
         }
         //获得输出文件
         File destFile = outputProvider.getContentLocation(destName + "_" + hexName, jarInput.contentTypes, jarInput.scopes, Format.JAR)
-        if (isIncremental) {
-            Status status = jarInput.getStatus()
-            switch (status) {
-                case Status.NOTCHANGED:
-                    break
-                case Status.ADDED:
-                case Status.CHANGED:
-                    Logger.info("jar status = $status:$destFile.absolutePath")
-                    transformJar(destFile, jarInput, context)
-                    break
-                case Status.REMOVED:
-                    Logger.info("jar status = $status:$destFile.absolutePath")
-                    if (destFile.exists()) {
-                        FileUtils.forceDelete(destFile)
-                    }
-                    break
-                default:
-                    break
-            }
-        } else {
-            transformJar(destFile, jarInput, context)
-        }
+        transformJar(destFile, jarInput, context)
     }
+
     void transformJar(File dest, JarInput jarInput, Context context) {
         def modifiedJar = null
-        if (!transformHelper.extension.disableJar || jarInput.file.absolutePath.contains('SensorsAnalyticsSDK')) {
-            Logger.info("开始遍历 jar：" + jarInput.file.absolutePath)
-            modifiedJar = modifyJarFile(jarInput.file, context.getTemporaryDir())
-            Logger.info("结束遍历 jar：" + jarInput.file.absolutePath)
-        }
+        println("开始遍历 jar：" + jarInput.file.absolutePath)
+//        modifiedJar = modifyJarFile(jarInput.file, context.getTemporaryDir())
+//        println("结束遍历 jar：" + jarInput.file.absolutePath)
         if (modifiedJar == null) {
             modifiedJar = jarInput.file
         }

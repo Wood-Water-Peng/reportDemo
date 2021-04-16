@@ -8,13 +8,15 @@ buildscript{
         jcenter()
 
     }
+
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     // 包含了AMS字节码注入工具
-    implementation "com.android.tools.build:gradle:3.6.3"
+    implementation "com.android.tools.build:gradle:3.4.2"
     implementation gradleApi()
+
 }
 
 sourceSets {

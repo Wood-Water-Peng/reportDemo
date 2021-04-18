@@ -24,7 +24,7 @@ class TrackTransform extends Transform {
 
     @Override
     Set<? super QualifiedContent.Scope> getScopes() {
-        return TransformManager.PROJECT_ONLY;
+        return TransformManager.SCOPE_FULL_PROJECT;
     }
 
     @Override
@@ -38,10 +38,10 @@ class TrackTransform extends Transform {
         Collection<TransformInput> transformInputs = transformInvocation.getInputs();
         TransformOutputProvider outputProvider= transformInvocation.getOutputProvider();
         transformInputs.each { TransformInput input ->
-            //遍历 jar
-//            input.jarInputs.each { JarInput jarInput ->
-//                forEachJar(transformInvocation.incremental, jarInput,outputProvider, transformInvocation.context)
-//            }
+//            遍历 jar
+            input.jarInputs.each { JarInput jarInput ->
+                forEachJar(jarInput,outputProvider, transformInvocation.context)
+            }
 
             //遍历目录
             input.directoryInputs.each { DirectoryInput directoryInput ->
@@ -73,7 +73,8 @@ class TrackTransform extends Transform {
                 // 对class文件的写入
                 ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
                 // 访问class文件相应的内容，解析到某一个结构就会通知到ClassVisitor的相应方法
-                ClassVisitor classVisitor = new TrackClassVisitor(classWriter)
+                ClassVisitor firstVisitor=new TrackFirstVisitor(classWriter)
+                ClassVisitor classVisitor = new TrackClassVisitor(firstVisitor)
                 // 依次调用ClassVisitor接口的各个方法
                 classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES)
                 // toByteArray方法会将最终修改的字节码以byte数组形式返回
@@ -89,7 +90,7 @@ class TrackTransform extends Transform {
 
     }
 
-    void forEachJar(boolean isIncremental, JarInput jarInput, TransformOutputProvider outputProvider, Context context) {
+    void forEachJar(JarInput jarInput, TransformOutputProvider outputProvider, Context context) {
         String destName = jarInput.file.name
         //截取文件路径的 md5 值重命名输出文件，因为可能同名，会覆盖
         def hexName = DigestUtils.md5Hex(jarInput.file.absolutePath).substring(0, 8)
@@ -104,8 +105,6 @@ class TrackTransform extends Transform {
     void transformJar(File dest, JarInput jarInput, Context context) {
         def modifiedJar = null
         println("开始遍历 jar：" + jarInput.file.absolutePath)
-//        modifiedJar = modifyJarFile(jarInput.file, context.getTemporaryDir())
-//        println("结束遍历 jar：" + jarInput.file.absolutePath)
         if (modifiedJar == null) {
             modifiedJar = jarInput.file
         }

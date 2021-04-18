@@ -1,5 +1,6 @@
 package com.example;
 
+import android.os.Bundle;
 import android.view.View;
 
 import com.example.lib.core.ReportHandler;
@@ -21,4 +22,23 @@ public class TrackCenterHelper {
         ViewClickEvent clickEvent = new ViewClickEvent.Builder().setActivityName(view.getContext().getClass().getCanonicalName()).build();
         clickEvent.report();
     }
+
+    public static void trackFragmentResume(Object object) {
+        System.out.println("trackFragmentResume object--->" + object.getClass().getCanonicalName());
+    }
+
+    public static void trackFragmentSetUserVisibleHint(Object object, boolean flag) {
+        System.out.println("trackFragmentSetUserVisibleHint object--->" + object.getClass().getCanonicalName());
+    }
+
+
+    public static void trackOnHiddenChanged(Object object, boolean onHiddenChanged) {
+        System.out.println("trackOnHiddenChanged object--->" + object.getClass().getCanonicalName());
+    }
+
+    public static void trackOnFragmentViewCreated(Object object, View view, Bundle bundle) {
+        System.out.println("trackOnFragmentViewCreated object--->" + object.getClass().getCanonicalName());
+    }
+
+
 }

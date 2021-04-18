@@ -34,7 +34,7 @@ public class TrackOnClickMethodVisitor extends AdviceAdapter {
 //        mv.visitVarInsn(ALOAD, variableID);
 
 
-        mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/example/TrackCenterHelper", "onViewClicked", "(Landroid/view/View;)V", false);
+        mv.visitMethodInsn(Opcodes.INVOKESTATIC,  TrackHookConfig.TRACK_API, "onViewClicked", "(Landroid/view/View;)V", false);
         //
         mv.visitLdcInsn("TAG");
         mv.visitLdcInsn(className + "----->" + methodName);

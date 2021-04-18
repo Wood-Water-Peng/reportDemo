@@ -9,8 +9,8 @@ import androidx.room.PrimaryKey;
  * @Date 2021/4/14 9:19 AM
  * @Version 1.0
  */
-@Entity(tableName = DBParams.EVENT_TABLE_NAME)
-public class EventEntity {
+@Entity(tableName = DBParams.EVENT_REPORT_TABLE_NAME)
+public class EventReportEntity {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
@@ -52,9 +52,6 @@ public class EventEntity {
     }
 
     public void setCreate_time(long create_time) {
-
         this.create_time = create_time;
     }
-
-
 }

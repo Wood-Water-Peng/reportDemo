@@ -39,16 +39,20 @@ public class TrackClassVisitor extends ClassVisitor {
         }
     }
 
+    String nameDesc;
+
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-        System.out.println("TrackClassVisitor visitMethod className:" + className + "---methodName:" + name);
         MethodVisitor mv = cv.visitMethod(access, name, descriptor, signature, exceptions);
+        //'onClick(Landroid/view/View;)V'
+        nameDesc = name + descriptor;
+        System.out.println("TrackClassVisitor visitMethod className:" + className + "---methodName:" + name);
 
         //如果该方法为接口中的方法
         if (hasImplOnClick) {
             System.out.println("TrackClassVisitor visitMethod hasImplOnClick:" + name);
-            if ("onClick".equals(name)) {
-                return new TrackOnClickMethodVisitor(mv, className, name);
+            if ("onClick(Landroid/view/View;)V".equals(nameDesc)) {
+                return new TrackOnClickMethodVisitor(mv, access, name, descriptor, className);
             }
         }
 

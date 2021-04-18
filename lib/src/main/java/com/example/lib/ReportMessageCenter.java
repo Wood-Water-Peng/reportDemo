@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import com.example.lib.core.ReportHandler;
 import com.example.lib.db.DBHelper;
 import com.example.lib.db.EventEntity;
+import com.example.lib.db.EventReportEntity;
 
 import org.json.JSONObject;
 
@@ -115,7 +116,17 @@ public class ReportMessageCenter {
             ReportLog.logD("sendData lastId->" + lastId);
             //上传数据
             try {
-                Thread.sleep(2000);
+                for (int i = 0; i < eventEntities.size(); i++) {
+                    Thread.sleep(100);
+                    EventEntity entity = eventEntities.get(i);
+                    EventReportEntity eventReportEntity = new EventReportEntity();
+                    eventReportEntity.setId(entity.getId());
+                    eventReportEntity.setCreate_time(entity.getCreate_time());
+                    eventReportEntity.setName(entity.getName());
+                    eventReportEntity.setData(entity.getData());
+                    dbHelper.reportEvent(eventReportEntity);
+                    ReportLog.logD("reportEvent id->" + entity.getId());
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {

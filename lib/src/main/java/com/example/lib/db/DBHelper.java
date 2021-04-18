@@ -20,6 +20,7 @@ public class DBHelper {
     private static volatile DBHelper sInstance;
     EventDatabase database;
     EventDao eventDao;
+    EventReportDao eventReportDao;
 
 
     public static DBHelper getInstance(Context context) {
@@ -37,6 +38,7 @@ public class DBHelper {
         database = Room.databaseBuilder(context.getApplicationContext(), EventDatabase.class, DBParams.DB_NAME) //new a database
                 .build();
         eventDao = database.getEventDao();
+        eventReportDao = database.getEventReportDao();
     }
 
     /**
@@ -45,6 +47,14 @@ public class DBHelper {
      */
     public long insertEvent(EventEntity entity) {
         return eventDao.insertEvent(entity);
+    }
+
+    /**
+     * @param entity 模拟将数据上传到服务器
+     * @return
+     */
+    public long reportEvent(EventReportEntity entity) {
+        return eventReportDao.insertEvent(entity);
     }
 
     /**

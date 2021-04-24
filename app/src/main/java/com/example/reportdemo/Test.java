@@ -17,6 +17,7 @@ public class Test implements View.OnClickListener{
 
     private void method2(String str) {
         Log.i(TAG, "method2->" + str);
+        method1();
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.example.lib.core.ReportHandler;
  * @Version 1.0
  */
 public class Event {
+
     public String tag;
 
     public void report() {

@@ -43,7 +43,7 @@ class TrackHookConfig {
                 "onViewCreated",
                 "(Landroid/view/View;Landroid/os/Bundle;)V",
                 "",
-                "onFragmentViewCreated",
+                "trackOnFragmentViewCreated",
                 "(Ljava/lang/Object;Landroid/view/View;Landroid/os/Bundle;)V",
                 0, 3,
                 [Opcodes.ALOAD, Opcodes.ALOAD, Opcodes.ALOAD]))

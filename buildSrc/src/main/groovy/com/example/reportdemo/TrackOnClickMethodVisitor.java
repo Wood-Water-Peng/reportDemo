@@ -30,14 +30,15 @@ public class TrackOnClickMethodVisitor extends AdviceAdapter {
         //非静态方法，第0个如参数是对象的引用
         //将栈帧中本地变量表中的第1个入参加载进来
         mv.visitVarInsn(ALOAD, 1);
-//        mv.visitVarInsn(ASTORE, variableID);
-//        mv.visitVarInsn(ALOAD, variableID);
-
-
+////        mv.visitVarInsn(ASTORE, variableID);
+////        mv.visitVarInsn(ALOAD, variableID);
+//
+//
         mv.visitMethodInsn(Opcodes.INVOKESTATIC,  TrackHookConfig.TRACK_API, "onViewClicked", "(Landroid/view/View;)V", false);
+//        mv.visitInsn(Opcodes.POP);
         //
         mv.visitLdcInsn("TAG");
-        mv.visitLdcInsn(className + "----->" + methodName);
+        mv.visitLdcInsn(className + "======>" + methodName);
         mv.visitMethodInsn(Opcodes.INVOKESTATIC, "android/util/Log", "i", "(Ljava/lang/String;Ljava/lang/String;)I", false);
         mv.visitInsn(Opcodes.POP);
     }
@@ -47,11 +48,4 @@ public class TrackOnClickMethodVisitor extends AdviceAdapter {
         super.onMethodExit(opcode);
     }
 
-    @Override
-    public void visitCode() {
-        super.visitCode();
-        System.out.println("MethodVisitor visitCode ----------------");
-
-
-    }
 }

@@ -1,6 +1,5 @@
 package com.example.reportdemo
 
-import jdk.nashorn.internal.runtime.regexp.joni.constants.OPCode
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
@@ -11,8 +10,8 @@ import org.objectweb.asm.Type
  * @Version 1.0
  */
 class TrackClassVisitor extends ClassVisitor {
-    private String className;
-    private String superName;
+    private String mClassName;
+    private String mSuperName;
     private String[] interfaces;
     private boolean hasImplOnClick = false;
 
@@ -26,23 +25,24 @@ class TrackClassVisitor extends ClassVisitor {
     @Override
     void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         super.visit(version, access, name, signature, superName, interfaces);
-        this.className = name;
-        this.superName = superName;
+        this.mClassName = name;
+        this.mSuperName = superName;
         //获取类所实现的所有接口
         this.interfaces = interfaces;
         if (interfaces != null) {
-//            for (int i = 0; i < interfaces.length; i++) {
-//                if (interfaces[i].equals("android/view/View$OnClickListener")) {
-//                    System.out.println("TrackClassVisitor visit className:" + className + "实现了OnClickListener");
-//                    hasImplOnClick = true;
-//                }
-//            }
+            for (int i = 0; i < interfaces.length; i++) {
+                if (interfaces[i] == 'android/view/View$OnClickListener') {
+                    System.out.println("TrackClassVisitor visit className:" + mClassName + "实现了OnClickListener");
+                    hasImplOnClick = true;
+                }
+            }
         }
-        String topSuperName = TrackUtil.findTopParent(className)
+        String topSuperName = TrackUtil.findTopParent(mClassName)
         if (topSuperName != null) {
-            superName = topSuperName;
+            this.mSuperName = topSuperName;
         }
-        System.out.println("TrackClassVisitor visit className:" + className + "---superName:" + superName);
+        System.out.println("TrackClassVisitor visit className:" + mClassName + "---superName:" + mSuperName);
+
     }
 
     String nameDesc;
@@ -56,12 +56,16 @@ class TrackClassVisitor extends ClassVisitor {
 //        System.out.println("TrackClassVisitor visitMethod className:" + className + "---nameDesc:" + nameDesc);
 
         //如果该方法为接口中的方法
-        if (hasImplOnClick) {
-            System.out.println("TrackClassVisitor visitMethod hasImplOnClick:" + name);
-            if ("onClick(Landroid/view/View;)V".equals(nameDesc)) {
-                return new TrackOnClickMethodVisitor(mv, access, name, descriptor, className);
-            }
-        } else if (TrackUtil.isInstanceOfFragment(superName) && TrackHookConfig.FRAGMENT_METHODS.containsKey(nameDesc)) {
+//        if (hasImplOnClick) {
+//            System.out.println("TrackClassVisitor visitMethod hasImplOnClick:" + name);
+//            if ("onClick(Landroid/view/View;)V".equals(nameDesc)) {
+//                MethodVisitor onClickMethodVisitor = new TrackOnClickMethodVisitor(mv, access, name, descriptor, mClassName)
+////                mv.visitVarInsn(Opcodes.ALOAD, 1)
+//                return onClickMethodVisitor;
+//            }
+//        } else
+        if (TrackUtil.isInstanceOfFragment(mSuperName) && TrackHookConfig.FRAGMENT_METHODS.containsKey(nameDesc)) {
+            System.out.println("TrackClassVisitor isInstanceOfFragment className:" + mClassName + "---superName:" + mSuperName + "---nameDesc:" + nameDesc);
             //fragment的有效方法
             TrackMethodCell cell = TrackHookConfig.FRAGMENT_METHODS.get(nameDesc);
             List<Object> localIds = new ArrayList<>()
@@ -72,18 +76,16 @@ class TrackClassVisitor extends ClassVisitor {
 //                mv.visitVarInsn(cell.convertOpcodes(cell.opcodes.get(i)), localId)
 //                localIds.add(localId)
 //            }
-            mv.visitVarInsn(Opcodes.ALOAD, 0)
-            mv.visitVarInsn(Opcodes.ALOAD, 1)
-            mv.visitVarInsn(Opcodes.ALOAD, 2)
-            return new TrackFragmentMethodVisitor(mv, access, name, descriptor, className, localIds, cell);
+
+            return new TrackFragmentMethodVisitor(mv, access, name, descriptor, mClassName, localIds, cell);
         }
 
-        if ("androidx/appcompat/app/AppCompatActivity".equals(superName)) {
-            if (name.startsWith("onCreate")) {
-                // 处理onCreate方法
-                return new TrackMethodVisitor(mv, className, name);
-            }
-        }
+//        if ("androidx/appcompat/app/AppCompatActivity".equals(mSuperName)) {
+//            if (name.startsWith("onCreate")) {
+//                // 处理onCreate方法
+//                return new TrackMethodVisitor(mv, mClassName, name);
+//            }
+//        }
         return mv;
     }
 

@@ -14,8 +14,8 @@ import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
 
-class TrackTransform extends Transform {
-    private static final String TAG = "TrackTransform";
+class FirstTransform extends Transform {
+    private static final String TAG = "FirstTransform";
 
     @Override
     String getName() {
@@ -29,7 +29,7 @@ class TrackTransform extends Transform {
 
     @Override
     Set<? super QualifiedContent.Scope> getScopes() {
-        return TransformManager.PROJECT_ONLY;
+        return TransformManager.SCOPE_FULL_PROJECT;
     }
 
     @Override
@@ -79,9 +79,9 @@ class TrackTransform extends Transform {
                 ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
                 // 访问class文件相应的内容，解析到某一个结构就会通知到ClassVisitor的相应方法
                 ClassVisitor firstVisitor=new TrackFirstVisitor(classWriter)
-                ClassVisitor classVisitor = new TrackClassVisitor(firstVisitor)
+//                ClassVisitor classVisitor = new TrackClassVisitor(firstVisitor)
                 // 依次调用ClassVisitor接口的各个方法
-                classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES)
+                classReader.accept(firstVisitor, ClassReader.EXPAND_FRAMES)
                 // toByteArray方法会将最终修改的字节码以byte数组形式返回
                 byte[] bytes = classWriter.toByteArray()
                 // 通过文件流写入方式覆盖掉原先的内容，实现class文件的改写
@@ -199,9 +199,9 @@ class TrackTransform extends Transform {
         try {
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS)
             ClassVisitor firstVisitor=new TrackFirstVisitor(classWriter)
-            ClassVisitor classVisitor = new TrackClassVisitor(firstVisitor)
+//            ClassVisitor classVisitor = new TrackClassVisitor(firstVisitor)
             ClassReader cr = new ClassReader(srcClass)
-            cr.accept(classVisitor, ClassReader.EXPAND_FRAMES + ClassReader.SKIP_FRAMES)
+            cr.accept(firstVisitor, ClassReader.EXPAND_FRAMES + ClassReader.SKIP_FRAMES)
             return classWriter.toByteArray()
         } catch (Exception ex) {
             Logger.error("$className 类执行 modifyClass 方法出现异常")

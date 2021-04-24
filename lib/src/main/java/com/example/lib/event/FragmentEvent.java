@@ -6,11 +6,19 @@ package com.example.lib.event;
  * @Version 1.0
  */
 public class FragmentEvent extends Event {
-
+    public static final String NAME_ON_VIEW_CREATED = "onViewCreated";
+    public static final String NAME_ON_VIEW_DESTROYED = "onViewDestroyed";
+    public static final String NAME_ON_VIEW_RESUMED = "onFragmentResumed";
     private String activityName;
     private String fragmentName;
     private long onCreateTimeStamp;
     private long onDestroyTimeStamp;
+    /**
+     * View在整个视图树中的唯一id
+     * 1.root->viewgroup->viewgroup->view
+     */
+
+    private String viewId;
 
     public String getActivityName() {
         return activityName;
@@ -28,15 +36,24 @@ public class FragmentEvent extends Event {
         this.tag = tag;
     }
 
+    public FragmentEvent() {
+    }
+
     public static class Builder {
         private String activityName;
         private String tag;
         private String fragmentName;
+        private String viewPath;
         private long onCreateTimeStamp;
         private long onDestroyTimeStamp;
 
         public Builder setTag(String tag) {
             this.tag = tag;
+            return this;
+        }
+
+        public Builder setViewPath(String viewPath) {
+            this.viewPath = viewPath;
             return this;
         }
 
@@ -50,8 +67,9 @@ public class FragmentEvent extends Event {
             return this;
         }
 
-        public void setFragmentName(String fragmentName) {
+        public Builder setFragmentName(String fragmentName) {
             this.fragmentName = fragmentName;
+            return this;
         }
 
         public Builder setOnDestroyTimeStamp(long onDestroyTimeStamp) {

@@ -18,6 +18,7 @@ class TrackPlugin implements Plugin<Project> {
             AppExtension appExtension = project.extensions.findByType(AppExtension.class)
             appExtension.registerTransform(new FirstTransform())
             appExtension.registerTransform(new TrackTransform())
+//            appExtension.registerTransform(new TestTransform())
         }else {
             System.out.println("你已经关闭了埋点")
         }

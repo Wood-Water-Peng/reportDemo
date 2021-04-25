@@ -69,11 +69,13 @@ public class TestFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        TrackCenterHelper.trackOnFragmentViewCreated(this,view,savedInstanceState);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+    }
+
+    public void testMethod() {
     }
 }

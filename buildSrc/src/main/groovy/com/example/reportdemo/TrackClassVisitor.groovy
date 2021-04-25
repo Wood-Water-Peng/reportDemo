@@ -4,6 +4,7 @@ import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
+import org.objectweb.asm.commons.AdviceAdapter
 
 /**
  * @Author jacky.peng* @Date 2021/4/16 10:06 AM
@@ -50,21 +51,9 @@ class TrackClassVisitor extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         MethodVisitor mv = cv.visitMethod(access, name, descriptor, signature, exceptions);
-        //'onClick(Landroid/view/View;)V'
         nameDesc = name + descriptor;
-//        System.out.println("TrackClassVisitor visitMethod className:" + className + "---nameDesc:" + nameDesc);
-//        System.out.println("TrackClassVisitor visitMethod className:" + className + "---nameDesc:" + nameDesc);
-
         //如果该方法为接口中的方法
-//        if (hasImplOnClick) {
-//            System.out.println("TrackClassVisitor visitMethod hasImplOnClick:" + name);
-//            if ("onClick(Landroid/view/View;)V".equals(nameDesc)) {
-//                MethodVisitor onClickMethodVisitor = new TrackOnClickMethodVisitor(mv, access, name, descriptor, mClassName)
-////                mv.visitVarInsn(Opcodes.ALOAD, 1)
-//                return onClickMethodVisitor;
-//            }
-//        } else
-        if (TrackUtil.isInstanceOfFragment(mSuperName) && TrackHookConfig.FRAGMENT_METHODS.containsKey(nameDesc)) {
+       if (TrackUtil.isInstanceOfFragment(mSuperName) && TrackHookConfig.FRAGMENT_METHODS.containsKey(nameDesc)) {
             System.out.println("TrackClassVisitor isInstanceOfFragment className:" + mClassName + "---superName:" + mSuperName + "---nameDesc:" + nameDesc);
             //fragment的有效方法
             TrackMethodCell cell = TrackHookConfig.FRAGMENT_METHODS.get(nameDesc);
@@ -78,14 +67,16 @@ class TrackClassVisitor extends ClassVisitor {
 //            }
 
             return new TrackFragmentMethodVisitor(mv, access, name, descriptor, mClassName, localIds, cell);
+        } else if (TrackUtil.isInstanceOfFragment(mSuperName) && nameDesc == 'testMethod()V') {
+            System.out.println("TrackClassVisitor isInstanceOfFragment&&testMethod className:" + mClassName + "---superName:" + mSuperName + "---nameDesc:" + nameDesc);
+            return new AdviceAdapter(Opcodes.ASM6, mv, access, name, descriptor) {
+                @Override
+                protected void onMethodEnter() {
+                    mv.visitMethodInsn(INVOKESTATIC, TrackHookConfig.TRACK_API, "testMethod", "()V", false);
+                }
+            }
         }
 
-//        if ("androidx/appcompat/app/AppCompatActivity".equals(mSuperName)) {
-//            if (name.startsWith("onCreate")) {
-//                // 处理onCreate方法
-//                return new TrackMethodVisitor(mv, mClassName, name);
-//            }
-//        }
         return mv;
     }
 

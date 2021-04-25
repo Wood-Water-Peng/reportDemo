@@ -22,6 +22,5 @@ public class Test implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        Log.i(TAG,"Test onClick---");
     }
 }

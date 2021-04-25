@@ -29,7 +29,7 @@ class FirstTransform extends Transform {
 
     @Override
     Set<? super QualifiedContent.Scope> getScopes() {
-        return TransformManager.SCOPE_FULL_PROJECT;
+        return TransformManager.SCOPE_FULL_PROJECT
     }
 
     @Override
@@ -40,6 +40,7 @@ class FirstTransform extends Transform {
     @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         long startTime = System.currentTimeMillis()
+        println(TAG+" transform start-->"+startTime)
         Collection<TransformInput> transformInputs = transformInvocation.getInputs();
         TransformOutputProvider outputProvider= transformInvocation.getOutputProvider();
         transformInputs.each { TransformInput input ->
@@ -54,7 +55,7 @@ class FirstTransform extends Transform {
             }
         }
 
-        println("[SensorsAnalytics]: 此次编译共耗时:${System.currentTimeMillis() - startTime}毫秒")
+        println(TAG+" transform end: 此次编译共耗时:${System.currentTimeMillis() - startTime}毫秒")
 
     }
 
@@ -79,7 +80,6 @@ class FirstTransform extends Transform {
                 ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
                 // 访问class文件相应的内容，解析到某一个结构就会通知到ClassVisitor的相应方法
                 ClassVisitor firstVisitor=new TrackFirstVisitor(classWriter)
-//                ClassVisitor classVisitor = new TrackClassVisitor(firstVisitor)
                 // 依次调用ClassVisitor接口的各个方法
                 classReader.accept(firstVisitor, ClassReader.EXPAND_FRAMES)
                 // toByteArray方法会将最终修改的字节码以byte数组形式返回
@@ -167,7 +167,7 @@ class FirstTransform extends Transform {
                     jarOutputStream.putNextEntry(entry)
                     sourceClassBytes = TrackUtil.toByteArrayAndAutoCloseStream(inputStream)
                 } catch (Exception e) {
-                    Logger.error("Exception encountered while processing jar: " + jarFile.getAbsolutePath())
+                    System.out.println("Exception encountered while processing jar: " + jarFile.getAbsolutePath())
                     IOUtils.closeQuietly(file)
                     IOUtils.closeQuietly(jarOutputStream)
                     e.printStackTrace()
@@ -199,12 +199,11 @@ class FirstTransform extends Transform {
         try {
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS)
             ClassVisitor firstVisitor=new TrackFirstVisitor(classWriter)
-//            ClassVisitor classVisitor = new TrackClassVisitor(firstVisitor)
             ClassReader cr = new ClassReader(srcClass)
             cr.accept(firstVisitor, ClassReader.EXPAND_FRAMES + ClassReader.SKIP_FRAMES)
             return classWriter.toByteArray()
         } catch (Exception ex) {
-            Logger.error("$className 类执行 modifyClass 方法出现异常")
+            System.out.println("$className 类执行 modifyClass 方法出现异常")
             ex.printStackTrace()
             return srcClass
         }

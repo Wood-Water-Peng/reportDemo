@@ -37,6 +37,12 @@ class TrackFragmentMethodVisitor extends AdviceAdapter {
         mv.visitVarInsn(Opcodes.ALOAD, 2)
         System.out.println("MethodVisitor onMethodEnter ----------------name:" + className + "--agentName:" + cell.agentName + "--agentDesc:" + cell.agentDesc);
         mv.visitMethodInsn(INVOKESTATIC, TrackHookConfig.TRACK_API, cell.agentName, cell.agentDesc, false);
+
+
+        mv.visitLdcInsn("TAG");
+        mv.visitLdcInsn(className + "======>" + methodName);
+        mv.visitMethodInsn(Opcodes.INVOKESTATIC, "android/util/Log", "i", "(Ljava/lang/String;Ljava/lang/String;)I", false);
+        mv.visitInsn(Opcodes.POP);
     }
 
     @Override
@@ -47,8 +53,5 @@ class TrackFragmentMethodVisitor extends AdviceAdapter {
     @Override
     void visitCode() {
         super.visitCode();
-
-
-
     }
 }

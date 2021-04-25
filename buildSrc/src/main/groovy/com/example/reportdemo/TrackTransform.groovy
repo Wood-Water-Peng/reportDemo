@@ -40,6 +40,7 @@ class TrackTransform extends Transform {
     @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         long startTime = System.currentTimeMillis()
+        println(TAG+" transform start-->"+startTime)
         Collection<TransformInput> transformInputs = transformInvocation.getInputs();
         TransformOutputProvider outputProvider= transformInvocation.getOutputProvider();
         transformInputs.each { TransformInput input ->
@@ -54,7 +55,7 @@ class TrackTransform extends Transform {
             }
         }
 
-        println("[SensorsAnalytics]: 此次编译共耗时:${System.currentTimeMillis() - startTime}毫秒")
+        println(TAG+" transform end 此次编译共耗时:${System.currentTimeMillis() - startTime}毫秒")
 
     }
 
@@ -78,8 +79,7 @@ class TrackTransform extends Transform {
                 // 对class文件的写入
                 ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
                 // 访问class文件相应的内容，解析到某一个结构就会通知到ClassVisitor的相应方法
-                ClassVisitor firstVisitor=new TrackFirstVisitor(classWriter)
-                ClassVisitor classVisitor = new TrackClassVisitor(firstVisitor)
+                ClassVisitor classVisitor = new TrackClassVisitor(classWriter)
                 // 依次调用ClassVisitor接口的各个方法
                 classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES)
                 // toByteArray方法会将最终修改的字节码以byte数组形式返回
@@ -198,8 +198,7 @@ class TrackTransform extends Transform {
     private byte[] modifyClass(byte[] srcClass, String className) {
         try {
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS)
-            ClassVisitor firstVisitor=new TrackFirstVisitor(classWriter)
-            ClassVisitor classVisitor = new TrackClassVisitor(firstVisitor)
+            ClassVisitor classVisitor = new TrackClassVisitor(classWriter)
             ClassReader cr = new ClassReader(srcClass)
             cr.accept(classVisitor, ClassReader.EXPAND_FRAMES + ClassReader.SKIP_FRAMES)
             return classWriter.toByteArray()

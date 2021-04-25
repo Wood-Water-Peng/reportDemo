@@ -15,6 +15,7 @@ import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
 
 class TrackTransform extends Transform {
+    public static final String VERSION = "1.0.0"
     private static final String TAG = "TrackTransform";
 
     @Override
@@ -40,13 +41,13 @@ class TrackTransform extends Transform {
     @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         long startTime = System.currentTimeMillis()
-        println(TAG+" transform start-->"+startTime)
+        println(TAG + " transform start-->" + startTime)
         Collection<TransformInput> transformInputs = transformInvocation.getInputs();
-        TransformOutputProvider outputProvider= transformInvocation.getOutputProvider();
+        TransformOutputProvider outputProvider = transformInvocation.getOutputProvider();
         transformInputs.each { TransformInput input ->
 //            遍历 jar
             input.jarInputs.each { JarInput jarInput ->
-                forEachJar(jarInput,outputProvider, transformInvocation.context)
+                forEachJar(jarInput, outputProvider, transformInvocation.context)
             }
 
             //遍历目录
@@ -55,7 +56,7 @@ class TrackTransform extends Transform {
             }
         }
 
-        println(TAG+" transform end 此次编译共耗时:${System.currentTimeMillis() - startTime}毫秒")
+        println(TAG + " transform end 此次编译共耗时:${System.currentTimeMillis() - startTime}毫秒")
 
     }
 
@@ -64,10 +65,6 @@ class TrackTransform extends Transform {
         File dest = outputProvider.getContentLocation(directoryInput.getName(),
                 directoryInput.getContentTypes(), directoryInput.getScopes(),
                 Format.DIRECTORY)
-//        FileUtils.forceMkdir(dest)
-        String srcDirPath = dir.absolutePath
-        String destDirPath = dest.absolutePath
-//        FileUtils.copyDirectory(dir, dest)
         println "srcDir:${dir}, desDir:${dest}"
         //遍历目录中的所有.class文件
         if (dir) {
@@ -177,7 +174,7 @@ class TrackTransform extends Transform {
                     className = entryName.replace("/", ".").replace(".class", "")
 //                    ClassNameAnalytics classNameAnalytics = transformHelper.analytics(className)
 //                    if (classNameAnalytics.isShouldModify) {
-                        modifiedClassBytes = modifyClass(sourceClassBytes, className)
+                    modifiedClassBytes = modifyClass(sourceClassBytes, className)
 //                    }
                 }
                 if (modifiedClassBytes == null) {

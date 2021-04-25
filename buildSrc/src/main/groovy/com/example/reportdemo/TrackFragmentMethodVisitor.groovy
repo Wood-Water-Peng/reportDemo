@@ -2,6 +2,7 @@ package com.example.reportdemo
 
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
+import org.objectweb.asm.Type
 import org.objectweb.asm.commons.AdviceAdapter
 
 /**
@@ -13,28 +14,31 @@ class TrackFragmentMethodVisitor extends AdviceAdapter {
     private String methodName;
     private List<Object> variableID;
     private TrackMethodCell cell;
+    String nameDesc
 
-
-    TrackFragmentMethodVisitor(MethodVisitor mv, int access, String name, String desc, String className, List variableID, TrackMethodCell cell) {
+    TrackFragmentMethodVisitor(MethodVisitor mv, int access, String name, String desc, String className) {
         super(Opcodes.ASM6, mv, access, name, desc);
         this.className = className;
         this.methodName = name;
-        this.variableID = variableID;
-        this.cell = cell;
+        this.nameDesc = name + desc
+        cell = TrackHookConfig.FRAGMENT_METHODS.get(nameDesc)
+//        variableID = new ArrayList<>()
+//        Type[] types = Type.getArgumentTypes(desc)
+//        for (int i = 1; i < cell.paramsCount; i++) {
+//            int localId = newLocal(types[i - 1])
+//            mv.visitVarInsn(cell.opcodes.get(i), i)
+//            mv.visitVarInsn(TrackUtil.convertOpcodes(cell.opcodes.get(i)), localId)
+//        }
     }
 
     @Override
     protected void onMethodEnter() {
         super.onMethodEnter();
         //希望调用
-//        mv.visitVarInsn(ALOAD, 0);
-//        for (int i = 1; i < cell.paramsCount; i++) {
-//            mv.visitVarInsn(cell.opcodes.get(i), variableID[i - 1]);
-//        }
-
-        mv.visitVarInsn(Opcodes.ALOAD, 0)
-        mv.visitVarInsn(Opcodes.ALOAD, 1)
-        mv.visitVarInsn(Opcodes.ALOAD, 2)
+        mv.visitVarInsn(ALOAD, 0);
+        for (int i = 1; i < cell.paramsCount; i++) {
+            mv.visitVarInsn(cell.opcodes.get(i), i);
+        }
         System.out.println("MethodVisitor onMethodEnter ----------------name:" + className + "--agentName:" + cell.agentName + "--agentDesc:" + cell.agentDesc);
         mv.visitMethodInsn(INVOKESTATIC, TrackHookConfig.TRACK_API, cell.agentName, cell.agentDesc, false);
 

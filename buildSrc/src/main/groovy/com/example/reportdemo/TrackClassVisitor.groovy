@@ -4,7 +4,6 @@ import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
-import org.objectweb.asm.commons.AdviceAdapter
 
 /**
  * @Author jacky.peng* @Date 2021/4/16 10:06 AM
@@ -56,28 +55,10 @@ class TrackClassVisitor extends ClassVisitor {
        if (TrackUtil.isInstanceOfFragment(mSuperName) && TrackHookConfig.FRAGMENT_METHODS.containsKey(nameDesc)) {
             System.out.println("TrackClassVisitor isInstanceOfFragment className:" + mClassName + "---superName:" + mSuperName + "---nameDesc:" + nameDesc);
             //fragment的有效方法
-            TrackMethodCell cell = TrackHookConfig.FRAGMENT_METHODS.get(nameDesc);
-            List<Object> localIds = new ArrayList<>()
-            Type[] types = Type.getArgumentTypes(descriptor)
-//            for (int i = 1; i < cell.paramsCount; i++) {
-//                int localId = newLocal(types[i - 1])
-//                mv.visitVarInsn(cell.opcodes.get(i), i)
-//                mv.visitVarInsn(cell.convertOpcodes(cell.opcodes.get(i)), localId)
-//                localIds.add(localId)
-//            }
 
-            return new TrackFragmentMethodVisitor(mv, access, name, descriptor, mClassName, localIds, cell);
-        } else if (TrackUtil.isInstanceOfFragment(mSuperName) && nameDesc == 'testMethod()V') {
-            System.out.println("TrackClassVisitor isInstanceOfFragment&&testMethod className:" + mClassName + "---superName:" + mSuperName + "---nameDesc:" + nameDesc);
-            return new AdviceAdapter(Opcodes.ASM6, mv, access, name, descriptor) {
-                @Override
-                protected void onMethodEnter() {
-                    mv.visitMethodInsn(INVOKESTATIC, TrackHookConfig.TRACK_API, "testMethod", "()V", false);
-                }
-            }
+            return new TrackFragmentMethodVisitor(mv, access, name, descriptor, mClassName)
         }
-
-        return mv;
+        return mv
     }
 
 

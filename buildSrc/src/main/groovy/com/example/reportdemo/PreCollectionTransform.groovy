@@ -13,9 +13,18 @@ import org.objectweb.asm.ClassWriter
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
+import com.example.reportdemo.Logger
 
-class FirstTransform extends Transform {
-    private static final String TAG = "FirstTransform";
+/**
+ * 在执行class跟踪之前的收集信息的任务，
+ * 比如FragmentA->BaseReportFragment->androidx.fragment.app.Fragment/android.app.Fragment
+ *
+ * 此时，可以收集到FragmentA是Fragment的一个实例
+ *
+ * 插桩完之后的输出目录app/build/intermediates/transforms/TrackTransform，作为TrackTransform任务的输入
+ */
+class PreCollectionTransform extends Transform {
+    private static final String TAG = "PreCollectionTransform"
 
     @Override
     String getName() {
@@ -29,6 +38,9 @@ class FirstTransform extends Transform {
 
     @Override
     Set<? super QualifiedContent.Scope> getScopes() {
+        /**
+         * 收集整个项目的class文件，即app模块(目录形式)和其他的子模块(jar的形式)
+         */
         return TransformManager.SCOPE_FULL_PROJECT
     }
 
@@ -37,16 +49,22 @@ class FirstTransform extends Transform {
         return false
     }
 
+    private void beforeTransform(TransformInvocation transformInvocation) {
+        Logger.printCopyright()
+    }
+    long startTime
+
     @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
-        long startTime = System.currentTimeMillis()
-        println(TAG+" transform start-->"+startTime)
+        beforeTransform(transformInvocation)
+        startTime = System.currentTimeMillis()
+        println(TAG + " transform start-->" + startTime)
         Collection<TransformInput> transformInputs = transformInvocation.getInputs();
-        TransformOutputProvider outputProvider= transformInvocation.getOutputProvider();
+        TransformOutputProvider outputProvider = transformInvocation.getOutputProvider();
         transformInputs.each { TransformInput input ->
 //            遍历 jar
             input.jarInputs.each { JarInput jarInput ->
-                forEachJar(jarInput,outputProvider, transformInvocation.context)
+                forEachJar(jarInput, outputProvider, transformInvocation.context)
             }
 
             //遍历目录
@@ -54,9 +72,11 @@ class FirstTransform extends Transform {
                 forEachDirectory(directoryInput, outputProvider)
             }
         }
+        afterTransform()
+    }
 
-        println(TAG+" transform end: 此次编译共耗时:${System.currentTimeMillis() - startTime}毫秒")
-
+    private void afterTransform() {
+        println(TAG + " transform end: 此次编译共耗时:${System.currentTimeMillis() - startTime}毫秒")
     }
 
     void forEachDirectory(DirectoryInput directoryInput, TransformOutputProvider outputProvider) {
@@ -64,10 +84,6 @@ class FirstTransform extends Transform {
         File dest = outputProvider.getContentLocation(directoryInput.getName(),
                 directoryInput.getContentTypes(), directoryInput.getScopes(),
                 Format.DIRECTORY)
-//        FileUtils.forceMkdir(dest)
-        String srcDirPath = dir.absolutePath
-        String destDirPath = dest.absolutePath
-//        FileUtils.copyDirectory(dir, dest)
         println "srcDir:${dir}, desDir:${dest}"
         //遍历目录中的所有.class文件
         if (dir) {
@@ -79,7 +95,7 @@ class FirstTransform extends Transform {
                 // 对class文件的写入
                 ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
                 // 访问class文件相应的内容，解析到某一个结构就会通知到ClassVisitor的相应方法
-                ClassVisitor firstVisitor=new TrackFirstVisitor(classWriter)
+                ClassVisitor firstVisitor = new TrackFirstVisitor(classWriter)
                 // 依次调用ClassVisitor接口的各个方法
                 classReader.accept(firstVisitor, ClassReader.EXPAND_FRAMES)
                 // toByteArray方法会将最终修改的字节码以byte数组形式返回
@@ -177,7 +193,7 @@ class FirstTransform extends Transform {
                     className = entryName.replace("/", ".").replace(".class", "")
 //                    ClassNameAnalytics classNameAnalytics = transformHelper.analytics(className)
 //                    if (classNameAnalytics.isShouldModify) {
-                        modifiedClassBytes = modifyClass(sourceClassBytes, className)
+                    modifiedClassBytes = modifyClass(sourceClassBytes, className)
 //                    }
                 }
                 if (modifiedClassBytes == null) {
@@ -198,7 +214,7 @@ class FirstTransform extends Transform {
     private byte[] modifyClass(byte[] srcClass, String className) {
         try {
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS)
-            ClassVisitor firstVisitor=new TrackFirstVisitor(classWriter)
+            ClassVisitor firstVisitor = new TrackFirstVisitor(classWriter)
             ClassReader cr = new ClassReader(srcClass)
             cr.accept(firstVisitor, ClassReader.EXPAND_FRAMES + ClassReader.SKIP_FRAMES)
             return classWriter.toByteArray()

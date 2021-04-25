@@ -140,16 +140,16 @@ public class MainActivity extends AppCompatActivity {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
             @Override
             public void run() {
-                while (reportNum.get() > 0) {
-                    Random random = new Random(100);
-                    boolean aBoolean = random.nextBoolean();
-                    long timeMillis = System.currentTimeMillis();
-                    if (aBoolean) {
-                        new PageLifeCycleEvent("test", "" + timeMillis).report();
-                    } else {
-                        new PageOnCreateEvent("test", "" + timeMillis).report();
-                    }
-                }
+//                while (reportNum.get() > 0) {
+//                    Random random = new Random(100);
+//                    boolean aBoolean = random.nextBoolean();
+//                    long timeMillis = System.currentTimeMillis();
+//                    if (aBoolean) {
+//                        new PageLifeCycleEvent("test", "" + timeMillis).report();
+//                    } else {
+//                        new PageOnCreateEvent("test", "" + timeMillis).report();
+//                    }
+//                }
             }
         });
 

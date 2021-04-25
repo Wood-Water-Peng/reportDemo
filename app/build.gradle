@@ -1,6 +1,4 @@
 apply plugin: 'com.android.application'
-//添加 com.sensorsdata.analytics.android 插件
-//apply plugin: 'com.sensorsdata.analytics.android'
 apply plugin: 'com.example.reportdemo'
 
 android {

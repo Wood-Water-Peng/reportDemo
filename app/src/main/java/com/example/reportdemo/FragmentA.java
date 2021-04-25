@@ -65,6 +65,16 @@ public class FragmentA extends BaseReportFragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         view.findViewById(R.id.add).setOnClickListener(new View.OnClickListener() {
@@ -128,6 +138,11 @@ public class FragmentA extends BaseReportFragment {
         fragmentA2 = new FragmentA2();
         getChildFragmentManager().beginTransaction().add(R.id.contenta1,fragmentA1 ).commit();
         getChildFragmentManager().beginTransaction().add(R.id.contenta2, fragmentA2).commit();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 
     @Override

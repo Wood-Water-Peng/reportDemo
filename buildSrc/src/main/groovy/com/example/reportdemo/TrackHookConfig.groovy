@@ -13,7 +13,7 @@ class TrackHookConfig {
      * Fragment中的方法
      */
     public final static HashMap<String, TrackMethodCell> FRAGMENT_METHODS = new HashMap<>();
-    public final static String TRACK_API ="com/example/TrackCenterHelper";
+    public final static String TRACK_API = "com/example/TrackCenterHelper";
 
     static {
 //        FRAGMENT_METHODS.put("onResume()V", new TrackMethodCell(
@@ -47,5 +47,45 @@ class TrackHookConfig {
                 "(Ljava/lang/Object;Landroid/view/View;Landroid/os/Bundle;)V",
                 0, 3,
                 [Opcodes.ALOAD, Opcodes.ALOAD, Opcodes.ALOAD]))
+        FRAGMENT_METHODS.put("onDestroyView()V", new TrackMethodCell(
+                "onDestroyView",
+                "()V",
+                "",
+                "trackOnFragmentViewDestroyed",
+                "(Ljava/lang/Object;)V",
+                0, 1,
+                [Opcodes.ALOAD]))
+        FRAGMENT_METHODS.put("onDestroy()V", new TrackMethodCell(
+                "onDestroy",
+                "()V",
+                "",
+                "trackOnFragmentDestroyed",
+                "(Ljava/lang/Object;)V",
+                0, 1,
+                [Opcodes.ALOAD]))
+        FRAGMENT_METHODS.put("onCreate(Landroid/os/Bundle;)V", new TrackMethodCell(
+                "onCreate",
+                "(Landroid/os/Bundle;)V",
+                "",
+                "trackOnFragmentCreated",
+                "(Ljava/lang/Object;Landroid/os/Bundle;)V",
+                0, 2,
+                [Opcodes.ALOAD, Opcodes.ALOAD]))
+        FRAGMENT_METHODS.put("onAttach(Landroid/content/Context;)V", new TrackMethodCell(
+                "onAttach",
+                "(Landroid/content/Context;)V",
+                "",
+                "trackOnFragmentAttached",
+                "(Ljava/lang/Object;)V",
+                0, 1,
+                [Opcodes.ALOAD]))
+        FRAGMENT_METHODS.put("onDetach()V", new TrackMethodCell(
+                "onDetach",
+                "()V",
+                "",
+                "trackOnFragmentDetached",
+                "(Ljava/lang/Object;)V",
+                0, 1,
+                [Opcodes.ALOAD]))
     }
 }

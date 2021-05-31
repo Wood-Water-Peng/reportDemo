@@ -17,7 +17,7 @@ class TrackPlugin implements Plugin<Project> {
         if(!disableSensorsAnalyticsPlugin){
             AppExtension appExtension = project.extensions.findByType(AppExtension.class)
             appExtension.registerTransform(new PreCollectionTransform())
-            appExtension.registerTransform(new TrackTransform())
+//            appExtension.registerTransform(new TrackTransform())
 //            appExtension.registerTransform(new TestTransform())
         }else {
             System.out.println("你已经关闭了埋点")

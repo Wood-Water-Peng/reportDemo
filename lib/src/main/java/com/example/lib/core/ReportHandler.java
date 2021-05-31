@@ -137,7 +137,7 @@ public class ReportHandler {
         entity.setData(dataObj.toString());
         entity.setCreate_time(System.currentTimeMillis());
         messageCenter.enqueueMsg(0, entity);
-        ReportLog.logD("track event->\n" + JSONUtils.formatJson(dataObj.toString()));
+//        ReportLog.logD("track event->\n" + JSONUtils.formatJson(dataObj.toString()));
     }
 
     /**

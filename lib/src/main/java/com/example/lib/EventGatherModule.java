@@ -1,4 +1,4 @@
-package com.example.event_gather_lib;
+package com.example.lib;
 
 import android.app.Activity;
 import android.app.Application;
@@ -22,9 +22,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class EventGatherModule {
 
     AtomicInteger activityCount = new AtomicInteger();
+    AtomicInteger visibleActivityCount = new AtomicInteger();
 
     public void onCreate(Application app) {
         ApplicationEvent event = new ApplicationEvent.Builder().setTag(EventConstants.APPLICATION_EVENT_ON_CREATED).setPackageName(app.getPackageName()).setOnCreateTimeStamp(System.currentTimeMillis()).build();
+        event.report();
         ReportLog.logD(app.getPackageName() + " onCreate");
 
         app.registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallBack() {
@@ -36,15 +38,29 @@ public class EventGatherModule {
 
             @Override
             public void onActivityResumed(@NonNull Activity activity) {
+                visibleActivityCount.getAndIncrement();
                 if (activityCount.get() == 1) {
                     ApplicationEvent event = new ApplicationEvent.Builder().setTag(EventConstants.APPLICATION_EVENT_ON_RESUMED).setPackageName(activity.getApplication().getPackageName()).setOnCreateTimeStamp(System.currentTimeMillis()).build();
+                    event.report();
                     ReportLog.logD(activity.getApplication().getPackageName() + " onResume");
                 }
 
                 ActivityEvent event = new ActivityEvent.Builder().setTag(EventConstants.ACTIVITY_EVENT_ON_RESUME).setActivityName(activity.getClass().getCanonicalName()).setOnCreateTimeStamp(System.currentTimeMillis()).build();
+                event.report();
                 ReportLog.logD(event.getActivityName() + " onResume");
 
+            }
 
+            @Override
+            public void onActivityStopped(@NonNull Activity activity) {
+                super.onActivityStopped(activity);
+                visibleActivityCount.getAndDecrement();
+                if (visibleActivityCount.get() == 0) {
+                    //无可见的Activity
+                    ActivityEvent event = new ActivityEvent.Builder().setTag(EventConstants.APPLICATION_EVENT_ON_BACKGROUND).setActivityName(activity.getClass().getCanonicalName()).setOnCreateTimeStamp(System.currentTimeMillis()).build();
+                    event.report();
+                    ReportLog.logD(activity.getPackageName() + " 进入后台");
+                }
             }
 
             @Override
@@ -59,6 +75,7 @@ public class EventGatherModule {
 
     public void onDestroy(Application app) {
         ApplicationEvent event = new ApplicationEvent.Builder().setTag(EventConstants.APPLICATION_EVENT_ON_DESTROY).setPackageName(app.getPackageName()).setOnDestroyTimeStamp(System.currentTimeMillis()).build();
+        event.report();
         ReportLog.logD(app.getPackageName() + " onDestroy");
     }
 }

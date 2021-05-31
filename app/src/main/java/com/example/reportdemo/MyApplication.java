@@ -2,7 +2,7 @@ package com.example.reportdemo;
 
 import android.app.Application;
 
-import com.example.event_gather_lib.EventGatherModule;
+import com.example.lib.EventGatherModule;
 import com.example.lib.ActivityLifecycleTracker;
 import com.example.lib.core.ReportHandler;
 

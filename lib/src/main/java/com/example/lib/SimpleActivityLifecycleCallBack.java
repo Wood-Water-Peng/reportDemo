@@ -1,4 +1,4 @@
-package com.example.event_gather_lib;
+package com.example.lib;
 
 import android.app.Activity;
 import android.app.Application;

@@ -1,4 +1,4 @@
-package com.example.event_gather_lib;
+package com.example.lib;
 
 import android.graphics.Rect;
 import android.util.Log;

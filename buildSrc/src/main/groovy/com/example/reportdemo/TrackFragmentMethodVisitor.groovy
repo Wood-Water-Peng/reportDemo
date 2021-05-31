@@ -46,7 +46,8 @@ class TrackFragmentMethodVisitor extends AdviceAdapter {
         mv.visitLdcInsn("TAG");
         mv.visitLdcInsn(className + "======>" + methodName);
         mv.visitMethodInsn(Opcodes.INVOKESTATIC, "android/util/Log", "i", "(Ljava/lang/String;Ljava/lang/String;)I", false);
-        mv.visitInsn(Opcodes.POP);
+        mv.visitVarInsn(Opcodes.ISTORE,1);
+//        mv.visitInsn(Opcodes.POP);
     }
 
     @Override

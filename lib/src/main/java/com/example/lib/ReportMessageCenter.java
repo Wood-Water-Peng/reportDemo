@@ -12,10 +12,12 @@ import com.example.lib.core.ReportHandler;
 import com.example.lib.db.DBHelper;
 import com.example.lib.db.EventEntity;
 import com.example.lib.db.EventReportEntity;
+import com.example.lib.utils.NetworkUtils;
 
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Random;
 
 import kotlin.jvm.internal.PropertyReference0Impl;
 
@@ -34,6 +36,7 @@ public class ReportMessageCenter {
     //上传数据的间隙20s
     private static final int INTERVAL = 20000;
     private static final int LIMIT = 20;
+    private final Context mContext;
     private Handler mHandler;
     private static volatile ReportMessageCenter sInstance;
     private ReportHandler reportHandler;
@@ -45,6 +48,7 @@ public class ReportMessageCenter {
         this.mHandler = new WorkHandler(thread.getLooper());
         this.reportHandler = reportHandler;
         this.dbHelper = DBHelper.getInstance(context);
+        this.mContext = context;
     }
 
     public static ReportMessageCenter getInstance(Context context, ReportHandler reportHandler) {
@@ -60,7 +64,6 @@ public class ReportMessageCenter {
 
     public void enqueueMsg(int type, EventEntity entity) {
         //1.将eventJson加入数据库并获得游标值
-
         long cursor = dbHelper.insertEvent(entity);
         if (cursor < 0) {
             ReportLog.logD("enqueueMsg error->" + cursor);
@@ -73,7 +76,7 @@ public class ReportMessageCenter {
             //2.如果超过50条，发送消息执行网络请求
             mHandler.sendMessage(message);
         } else {
-            //3.延迟发送消息
+            //3.延迟发送消息，且消息队列中不含有类似消息
             if (!mHandler.hasMessages(message.what)) {
                 mHandler.sendMessageDelayed(message, INTERVAL);
             }
@@ -90,32 +93,47 @@ public class ReportMessageCenter {
             switch (msg.what) {
                 case UPLOAD_DATA:
                     //上传数据
-                    sendData();
+                    sendDataAndDeleteDBRecord();
                     break;
             }
         }
     }
 
-    private void sendData() {
+    //当这个方法执行的时候，数据库中的消息条目是不确定的
+    //该方法要确保将DB中的数据上传完成
+    private void sendDataAndDeleteDBRecord() {
         //从数据库中最多取出50条数据
-
         //上传
         //成功--删除50条数据
         //失败--不删除
         //所以这个方法必须是子线程中的串行操作
+        //无网络
+        if (!NetworkUtils.isNetworkAvailable(mContext)) {
+            ReportLog.logD("网络未连接，暂停上传操作");
+            return;
+        }
 
         //每次从数据库中取50条，知道处理完毕
         boolean hasPendingEvent = true;
 
         while (hasPendingEvent) {
+            boolean deleteEvents = true;
             List<EventEntity> eventEntities = dbHelper.queryEvents(LIMIT);
             if (eventEntities == null || eventEntities.isEmpty()) {
                 break;
             }
+            //获取要上传的列表中，最后一项的id
             int lastId = eventEntities.get(eventEntities.size() - 1).getId();
             ReportLog.logD("sendData lastId->" + lastId);
-            //上传数据
+            //上传数据，模拟网络上传
+
             try {
+                Random random = new Random();
+                int i1 = random.nextInt(1000);
+                if (i1 % 3 == 0) {
+                    //模拟错误信息
+                    throw new InterruptedException("模拟错误信息");
+                }
                 for (int i = 0; i < eventEntities.size(); i++) {
                     Thread.sleep(100);
                     EventEntity entity = eventEntities.get(i);
@@ -128,12 +146,20 @@ public class ReportMessageCenter {
                     ReportLog.logD("reportEvent id->" + entity.getId());
                 }
             } catch (InterruptedException e) {
+                //如果上传出错，那么不应该删除db中的数据
+                deleteEvents = false;
                 e.printStackTrace();
+                ReportLog.logD("sendData 出错->" + e.getMessage());
             } finally {
-                long remainCount = dbHelper.deleteEvents(lastId);
-                ReportLog.logD("remainCount->" + remainCount);
-                if (remainCount == 0) {
-                    ReportLog.logD("db has clean");
+                if (deleteEvents) {
+                    long remainCount = dbHelper.deleteEvents(lastId);
+                    ReportLog.logD("remainCount->" + remainCount);
+                    if (remainCount == 0) {
+                        ReportLog.logD("db has clean");
+                        hasPendingEvent = false;
+                    }
+                } else {
+                    //暂停此次上传
                     hasPendingEvent = false;
                 }
             }

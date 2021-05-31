@@ -56,9 +56,11 @@ public class TrackCenterHelper {
 
     public static void trackOnFragmentViewDestroyed(Object object) {
         Log.i(TGA, "trackOnFragmentViewDestroy object--->" + object.getClass().getCanonicalName());
+        FragmentEvent fragmentEvent = new FragmentEvent.Builder().setTag((FragmentEvent.NAME_ON_VIEW_DESTROYED)).setFragmentName(object.getClass().getCanonicalName()).build();
+        fragmentEvent.report();
     }
 
-    public static void trackOnFragmentDetached(Object object) {
+        public static void trackOnFragmentDetached(Object object) {
         Log.i(TGA, "trackOnFragmentDetached object--->" + object.getClass().getCanonicalName());
     }
 

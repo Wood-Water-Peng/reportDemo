@@ -33,7 +33,6 @@ public class ActivityLifecycleTracker {
 
     }
 
-    Handler mHandler = new Handler();
 
     private String getActivityName(Activity activity) {
         if (activity == null) {

@@ -87,6 +87,7 @@ public class ViewClickEvent extends Event {
             event.onCreateTimeStamp = this.onCreateTimeStamp;
             event.onDestroyTimeStamp = this.onDestroyTimeStamp;
             event.fragmentName = this.fragmentName;
+            event.tag="ViewClickEvent";
             return event;
         }
     }

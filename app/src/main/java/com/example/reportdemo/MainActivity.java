@@ -6,45 +6,30 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.Looper;
 import android.os.MessageQueue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.event_gather_lib.ClickDelegate;
-import com.example.event_gather_lib.RecyclerViewExposureListener;
-import com.example.lib.FloatingAssitView;
-import com.example.lib.PathInfoActivity;
+import com.example.lib.RecyclerViewExposureListener;
 import com.example.lib.ViewUtil;
-import com.example.lib.event.PageLifeCycleEvent;
-import com.example.lib.event.PageOnCreateEvent;
-import com.example.lib.event.PageOnDestroyEvent;
 import com.example.lib.event.ViewClickEvent;
 import com.example.lib.event.ViewExposureEvent;
 
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static android.content.Context.WINDOW_SERVICE;
-import static android.os.Looper.getMainLooper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -196,6 +181,18 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) {
 
         });
+
+        new Thread(){
+
+            @Override
+            public void run() {
+
+                Looper.prepare();
+
+                Looper.loop();
+
+            }
+        }.start();
     }
 
     @Override

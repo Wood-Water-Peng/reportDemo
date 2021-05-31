@@ -79,6 +79,7 @@ public class ViewExposureEvent extends Event {
             event.onCreateTimeStamp = this.onCreateTimeStamp;
             event.onDestroyTimeStamp = this.onDestroyTimeStamp;
             event.fragmentName = this.fragmentName;
+            event.tag="ViewExposureEvent";
             return event;
         }
     }

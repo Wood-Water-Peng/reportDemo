@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.example.lib.EventReportEngine;
 import com.example.lib.ReportLog;
-import com.example.lib.ReportMessageCenter;
 import com.example.lib.TrackEventManager;
 import com.example.lib.TrackEventManagerThread;
 import com.example.lib.db.EventEntity;
@@ -133,10 +132,10 @@ public class ReportHandler {
         }
 
         EventEntity entity = new EventEntity();
-        entity.setName(event.tag);
+//        entity.setName(event.tag);
         entity.setData(dataObj.toString());
         entity.setCreate_time(System.currentTimeMillis());
-        messageCenter.enqueueMsg(0, entity);
+//        messageCenter.enqueueMsg(0, entity);
 //        ReportLog.logD("track event->\n" + JSONUtils.formatJson(dataObj.toString()));
     }
 

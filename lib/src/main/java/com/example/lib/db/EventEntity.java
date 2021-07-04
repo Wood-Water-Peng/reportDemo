@@ -14,8 +14,6 @@ public class EventEntity {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    @ColumnInfo(name = "event_name")
-    private String name;
 
     @ColumnInfo(name = "create_time")
     private long create_time;
@@ -39,13 +37,6 @@ public class EventEntity {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public long getCreate_time() {
         return create_time;

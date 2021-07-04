@@ -2,6 +2,7 @@ package com.example.lib.event;
 
 import com.example.lib.Constants;
 import com.example.lib.PageNodeManager;
+import com.example.lib.core.ReportCenterAPI;
 import com.example.lib.core.ReportHandler;
 import com.example.lib.node.PageNode;
 
@@ -87,7 +88,7 @@ public class ViewClickEvent extends Event {
             event.onCreateTimeStamp = this.onCreateTimeStamp;
             event.onDestroyTimeStamp = this.onDestroyTimeStamp;
             event.fragmentName = this.fragmentName;
-            event.tag="ViewClickEvent";
+            event.tag = "ViewClickEvent";
             return event;
         }
     }
@@ -103,7 +104,7 @@ public class ViewClickEvent extends Event {
             if (pre != null) {
                 jsonObject.put(Constants.PAGE_REFER_UID, pre.name);
             }
-            ReportHandler.getInstance().trackViewClick(this, jsonObject);
+            ReportCenterAPI.sharedInstance().trackEvent(Event.VIEW_CLICK_EVENT, jsonObject);
         } catch (JSONException e) {
             e.printStackTrace();
         }

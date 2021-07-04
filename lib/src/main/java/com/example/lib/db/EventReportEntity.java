@@ -15,13 +15,13 @@ public class EventReportEntity {
     private int id;
 
     @ColumnInfo(name = "event_name")
-    private String name;
+    private String name="aaaa";
 
     @ColumnInfo(name = "create_time")
-    private long create_time;
+    private long create_time=123;
 
     @ColumnInfo(name = "data")
-    private String data;
+    private String data="1222";
 
     public String getData() {
         return data;

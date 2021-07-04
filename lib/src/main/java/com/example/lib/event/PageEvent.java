@@ -1,5 +1,6 @@
 package com.example.lib.event;
 
+import com.example.lib.core.ReportCenterAPI;
 import com.example.lib.core.ReportHandler;
 
 /**
@@ -34,6 +35,7 @@ public class PageEvent extends Event{
     }
 
     public void report() {
-        ReportHandler.getInstance().getReportEngine().reportEvent(this, 0);
+//        ReportHandler.getInstance().getReportEngine().reportEvent(this, 0);
+        ReportCenterAPI.sharedInstance().trackEvent(name, null);
     }
 }

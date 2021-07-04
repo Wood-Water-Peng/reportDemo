@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.event_gather_lib.ClickDelegate;
 import com.example.lib.RecyclerViewExposureListener;
 import com.example.lib.ViewUtil;
 import com.example.lib.event.ViewClickEvent;
@@ -137,8 +136,6 @@ public class MainActivity extends AppCompatActivity {
 //                }
             }
         });
-
-        new ClickDelegate(getWindow().getDecorView());
 
         recyclerView = findViewById(R.id.recycle_view);
         recyclerView.setAdapter(new RecyclerView.Adapter() {

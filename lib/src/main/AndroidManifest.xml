@@ -3,10 +3,17 @@
     package="com.example.lib">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <application>
+    <application android:requestLegacyExternalStorage="true">
         <activity
             android:name=".PathInfoActivity"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask" />
+
+        <provider
+            android:name=".data.DemoContentProvider"
+            android:authorities="${applicationId}.DemoContentProvider"
+            android:exported="true"
+            android:enabled="true"
+            />
     </application>
 
 </manifest>

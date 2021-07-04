@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 
+version = "1.0.0"
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -18,6 +20,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            buildConfigField("String", "SDK_VERSION", "\"${version}\"")
         }
     }
 
@@ -43,4 +49,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
+    implementation 'com.google.code.gson:gson:2.8.7'
+
+    implementation("com.squareup.okhttp3:okhttp:3.12.1")
 }

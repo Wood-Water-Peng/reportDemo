@@ -1,8 +1,6 @@
-package com.example.reportdemo;
+package com.example.reportdemo
 
-import org.objectweb.asm.Opcodes;
-
-import java.util.HashMap;
+import org.objectweb.asm.Opcodes
 
 ///
 ///@author jacky.peng on
@@ -13,6 +11,8 @@ class TrackHookConfig {
      * Fragment中的方法
      */
     public final static HashMap<String, TrackMethodCell> FRAGMENT_METHODS = new HashMap<>();
+
+    public final static HashMap<String, TrackMethodCell> ACTIVITY_METHODS = new HashMap<>();
     public final static String TRACK_API = "com/example/TrackCenterHelper";
 
     static {
@@ -85,6 +85,32 @@ class TrackHookConfig {
                 "",
                 "trackOnFragmentDetached",
                 "(Ljava/lang/Object;)V",
+                0, 1,
+                [Opcodes.ALOAD]))
+
+        ACTIVITY_METHODS.put("onCreate(Landroid/os/Bundle;)V", new TrackMethodCell(
+                "onCreate",
+                "(Landroid/os/Bundle;)V",
+                "",
+                "trackOnActivityCreated",
+                "(Landroid/app/Activity;Landroid/os/Bundle;)V",
+                0, 2,
+                [Opcodes.ALOAD, Opcodes.ALOAD]))
+
+        ACTIVITY_METHODS.put("onStop()V", new TrackMethodCell(
+                "onStop",
+                "()V",
+                "",
+                "trackOnActivityStopped",
+                "(Landroid/app/Activity;)V",
+                0, 1,
+                [Opcodes.ALOAD]))
+        ACTIVITY_METHODS.put("onResume()V", new TrackMethodCell(
+                "onResume",
+                "()V",
+                "",
+                "trackOnActivityResumed",
+                "(Landroid/app/Activity;)V",
                 0, 1,
                 [Opcodes.ALOAD]))
     }

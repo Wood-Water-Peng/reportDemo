@@ -16,6 +16,8 @@ public class Event {
     public static final String VIEW_SHOW_EVENT = "$ViewShowEvent";
     public static final String PAGE_SHOW_EVENT = "$PageShowEvent";
     public static final String PAGE_HIDE_EVENT = "$PageHideEvent";
+    public static final String APP_START = "$AppStartEvent";
+    public static final String APP_END = "$AppEndEvent";
     public String tag;
 
     public void report() {

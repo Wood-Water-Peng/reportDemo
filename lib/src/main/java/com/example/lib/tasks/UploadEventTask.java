@@ -1,8 +1,10 @@
 package com.example.lib.tasks;
 
 import com.example.lib.R;
+import com.example.lib.ReportLog;
 import com.example.lib.UploadStrategy;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Random;
@@ -17,12 +19,12 @@ import okhttp3.Response;
 public class UploadEventTask implements Callable<UploadResult> {
     UploadStrategy strategy;
     String serverUrl;
-    JSONObject jsonObject;
+    String jsonObject;
 
     public UploadEventTask(UploadStrategy strategy, String serverUrl, String rawMsg) {
         this.strategy = strategy;
         this.serverUrl = serverUrl;
-        this.jsonObject = jsonObject;
+        this.jsonObject = rawMsg;
     }
 
     @Override
@@ -33,7 +35,22 @@ public class UploadEventTask implements Callable<UploadResult> {
 //        Request request = new Request.Builder().build();
 //        Response response = client.newCall(request).execute();
         int i = new Random().nextInt(100);
+        int size;
+        String startId;
+        String endId;
+        if (jsonObject.startsWith("[")) {
+            JSONArray array = new JSONArray(jsonObject);
+            size = array.length();
+            startId = array.getJSONObject(0).getString("_db_id");
+            endId = array.getJSONObject(size - 1).getString("_db_id");
+        } else {
+            JSONObject object = new JSONObject(jsonObject);
+            size = 1;
+            startId = object.getString("_db_id");
+            endId = object.getString("_db_id");
+        }
         if (i % 2 == 0) {
+            ReportLog.logJson("size: " + size + " startId: " + startId + " endId: " + endId, jsonObject);
             return new UploadResult(0, "发送成功");
         } else {
             return new UploadResult(-1, "发送失败");

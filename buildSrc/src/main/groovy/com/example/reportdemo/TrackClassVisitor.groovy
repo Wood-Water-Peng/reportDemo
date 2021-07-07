@@ -55,9 +55,17 @@ class TrackClassVisitor extends ClassVisitor {
        if (TrackUtil.isInstanceOfFragment(mSuperName) && TrackHookConfig.FRAGMENT_METHODS.containsKey(nameDesc)) {
             System.out.println("TrackClassVisitor isInstanceOfFragment className:" + mClassName + "---superName:" + mSuperName + "---nameDesc:" + nameDesc);
             //fragment的有效方法
-
             return new TrackFragmentMethodVisitor(mv, access, name, descriptor, mClassName)
         }
+
+
+        if (TrackUtil.isInstanceOfActivity(mSuperName) && TrackHookConfig.ACTIVITY_METHODS.containsKey(nameDesc)) {
+            System.out.println("TrackClassVisitor isInstanceOfActivity className:" + mClassName + "---superName:" + mSuperName + "---nameDesc:" + nameDesc);
+            //fragment的有效方法
+            return new TrackActivityMethodVisitor(mv, access, name, descriptor, mClassName)
+        }
+
+
         return mv
     }
 

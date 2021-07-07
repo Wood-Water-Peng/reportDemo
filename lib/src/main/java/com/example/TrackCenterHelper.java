@@ -1,9 +1,14 @@
 package com.example;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 
+import com.example.lib.core.ReportCenterAPI;
 import com.example.lib.core.ReportHandler;
 import com.example.lib.event.FragmentEvent;
 import com.example.lib.event.ViewClickEvent;
@@ -26,6 +31,7 @@ public class TrackCenterHelper {
         ViewClickEvent clickEvent = new ViewClickEvent.Builder().setActivityName(view.getContext().getClass().getCanonicalName()).build();
         clickEvent.report();
     }
+
 
     /**
      * 这里用Object是因为并不清楚用户使用的Fragment，父类也可能有多个版本
@@ -60,7 +66,7 @@ public class TrackCenterHelper {
         fragmentEvent.report();
     }
 
-        public static void trackOnFragmentDetached(Object object) {
+    public static void trackOnFragmentDetached(Object object) {
         Log.i(TGA, "trackOnFragmentDetached object--->" + object.getClass().getCanonicalName());
     }
 
@@ -71,8 +77,22 @@ public class TrackCenterHelper {
     public static void trackOnFragmentDestroyed(Object object) {
         Log.i(TGA, "trackOnFragmentDestroyed object--->" + object.getClass().getCanonicalName());
     }
-    public static void trackOnFragmentCreated(Object object,Bundle bundle) {
+
+    public static void trackOnFragmentCreated(Object object, Bundle bundle) {
         Log.i(TGA, "trackOnFragmentCreated object--->" + object.getClass().getCanonicalName());
+    }
+
+
+    public static void trackOnActivityCreated(Activity activity, Bundle bundle) {
+//        ReportCenterAPI.sharedInstance().getActivityIntoAssit().handleActivityStart(activity);
+    }
+
+    public static void trackOnActivityStopped(Activity activity) {
+        ReportCenterAPI.sharedInstance().getActivityIntoAssit().handleActivityStop(activity);
+    }
+
+    public static void trackOnActivityResumed(Activity activity) {
+        ReportCenterAPI.sharedInstance().getActivityIntoAssit().handleActivityResume(activity);
     }
 
 }

@@ -5,6 +5,7 @@ import org.objectweb.asm.Opcodes
 class TrackUtil {
     public static final int ASM_VERSION = Opcodes.ASM6
     private static final HashSet<String> targetFragmentClass = new HashSet()
+    private static final HashSet<String> targetActivityClass = new HashSet()
 
     public static final HashMap<String, String> childAndParents = new HashMap<>()
     static {
@@ -28,6 +29,8 @@ class TrackUtil {
         targetFragmentClass.add('androidx/fragment/app/Fragment')
         targetFragmentClass.add('androidx/fragment/app/ListFragment')
         targetFragmentClass.add('androidx/fragment/app/DialogFragment')
+
+        targetActivityClass.add('android/app/Activity')
     }
 
     static boolean isPublic(int access) {
@@ -53,6 +56,10 @@ class TrackUtil {
 
     static boolean isInstanceOfFragment(String superName) {
         return targetFragmentClass.contains(superName)
+    }
+
+    static boolean isInstanceOfActivity(String superName) {
+        return targetActivityClass.contains(superName)
     }
     static byte[] toByteArrayAndAutoCloseStream(InputStream input) throws Exception {
         ByteArrayOutputStream output = null

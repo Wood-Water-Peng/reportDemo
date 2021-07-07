@@ -109,7 +109,6 @@ public class DemoContentProvider extends ContentProvider {
                 } catch (SQLiteException e) {
                 }
             }
-            //目前逻辑不处理其他 Code
         } catch (Exception e) {
         }
         return deletedCounts;

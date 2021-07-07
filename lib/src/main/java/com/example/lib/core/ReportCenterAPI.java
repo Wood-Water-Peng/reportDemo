@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.example.lib.BuildConfig;
 import com.example.lib.TrackEventManager;
 import com.example.lib.TrackEventManagerThread;
+import com.example.lib.assit.ActivityIntoAssit;
 import com.example.lib.interceptor.IPropertyComposer;
 import com.example.lib.interceptor.LastPropertyComposer;
 import com.example.lib.interceptor.LibInfoPropertyComposer;
@@ -34,6 +35,16 @@ public class ReportCenterAPI extends AbstractReportCenter {
     public Map<String, Object> mDeviceInfo;
     protected static final Map<Context, ReportCenterAPI> sInstanceMap = new HashMap<>();
     private boolean mIsDebugMode = true;
+    private ActivityIntoAssit activityIntoAssit;
+    // Session 时长
+    protected int mSessionTime = 5 * 1000;
+    public ActivityIntoAssit getActivityIntoAssit() {
+        return activityIntoAssit;
+    }
+
+    public int getSessionTime() {
+        return mSessionTime;
+    }
 
     ReportCenterAPI(Context context, String serverUrl) {
         this.mContext = context;
@@ -48,7 +59,7 @@ public class ReportCenterAPI extends AbstractReportCenter {
         mEventHandlerCenter = new EventHandlerCenter(this);
         //获取设备信息
         mDeviceInfo = setupDeviceInfo();
-
+        activityIntoAssit = ActivityIntoAssit.getInstance(this);
     }
 
     /**
@@ -128,6 +139,10 @@ public class ReportCenterAPI extends AbstractReportCenter {
     public void trackInternal(final JSONObject sendProperties) {
         //将组装好的数据入队
         mEventHandlerCenter.enqueueEventMessage(null, sendProperties);
+    }
+
+    public void trackAutoEvent(final String eventName, final JSONObject properties) {
+        trackEvent(eventName, properties);
     }
 
     public void trackEvent(final String eventName, final JSONObject properties) {

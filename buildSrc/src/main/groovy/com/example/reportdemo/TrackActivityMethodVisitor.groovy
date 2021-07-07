@@ -2,26 +2,25 @@ package com.example.reportdemo
 
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
-import org.objectweb.asm.Type
 import org.objectweb.asm.commons.AdviceAdapter
 
 /**
  * @Author jacky.peng* @Date 2021/4/16 10:07 AM
  * @Version 1.0
  */
-class TrackFragmentMethodVisitor extends AdviceAdapter {
+class TrackActivityMethodVisitor extends AdviceAdapter {
     private String className;
     private String methodName;
     private List<Object> variableID;
     private TrackMethodCell cell;
     String nameDesc
 
-    TrackFragmentMethodVisitor(MethodVisitor mv, int access, String name, String desc, String className) {
+    TrackActivityMethodVisitor(MethodVisitor mv, int access, String name, String desc, String className) {
         super(Opcodes.ASM6, mv, access, name, desc);
         this.className = className;
         this.methodName = name;
         this.nameDesc = name + desc
-        cell = TrackHookConfig.FRAGMENT_METHODS.get(nameDesc)
+        cell = TrackHookConfig.ACTIVITY_METHODS.get(nameDesc)
     }
 
     @Override

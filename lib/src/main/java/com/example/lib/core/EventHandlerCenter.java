@@ -117,7 +117,6 @@ public class EventHandlerCenter {
             } finally {
                 if (deleteEvents) {
                     long remainCount = mDbAdapter.deleteEvents(lastId);
-//                    ReportLog.logD("remainCount->" + remainCount);
                     if (remainCount == 0) {
                         ReportLog.logD("db has clean");
                         hasPendingEvent = false;

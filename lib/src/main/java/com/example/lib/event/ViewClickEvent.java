@@ -104,7 +104,7 @@ public class ViewClickEvent extends Event {
             if (pre != null) {
                 jsonObject.put(Constants.PAGE_REFER_UID, pre.name);
             }
-            ReportCenterAPI.sharedInstance().trackEvent(Event.VIEW_CLICK_EVENT, jsonObject);
+            ReportCenterAPI.sharedInstance().trackAutoEvent(Event.VIEW_CLICK_EVENT, jsonObject);
         } catch (JSONException e) {
             e.printStackTrace();
         }

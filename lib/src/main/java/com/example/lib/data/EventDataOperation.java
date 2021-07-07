@@ -35,6 +35,7 @@ public class EventDataOperation extends DataOperation {
             if (cursor != null) {
                 StringBuilder dataBuilder = new StringBuilder();
                 final String flush_time = ",\"_flush_time\":";
+                final String id_in_db = ",\"_db_id\":";
                 String suffix = ",";
                 dataBuilder.append("[");
                 String keyData;
@@ -50,6 +51,8 @@ public class EventDataOperation extends DataOperation {
                             dataBuilder.append(keyData, 0, keyData.length() - 1)
                                     .append(flush_time)
                                     .append(System.currentTimeMillis())
+                                    .append(id_in_db)
+                                    .append(cursor.getString(cursor.getColumnIndex("id")))
                                     .append("}").append(suffix);
                         }
                     } catch (Exception e) {

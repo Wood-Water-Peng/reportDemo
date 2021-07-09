@@ -13,7 +13,8 @@ class TrackHookConfig {
     public final static HashMap<String, TrackMethodCell> FRAGMENT_METHODS = new HashMap<>();
 
     public final static HashMap<String, TrackMethodCell> ACTIVITY_METHODS = new HashMap<>();
-    public final static String TRACK_API = "com/example/TrackCenterHelper";
+    public final static String TRACK_API = "com/example/TrackCenterHelper"
+    public final static String TRACK_BASE_REPORT_ACTIVITY = "com/example/lib/BaseReportActivity"
 
     static {
 //        FRAGMENT_METHODS.put("onResume()V", new TrackMethodCell(
@@ -96,7 +97,14 @@ class TrackHookConfig {
                 "(Landroid/app/Activity;Landroid/os/Bundle;)V",
                 0, 2,
                 [Opcodes.ALOAD, Opcodes.ALOAD]))
-
+        ACTIVITY_METHODS.put("onStart()V", new TrackMethodCell(
+                "onStart",
+                "()V",
+                "",
+                "trackOnActivityStart",
+                "(Landroid/app/Activity;)V",
+                0, 1,
+                [Opcodes.ALOAD]))
         ACTIVITY_METHODS.put("onStop()V", new TrackMethodCell(
                 "onStop",
                 "()V",
@@ -110,6 +118,14 @@ class TrackHookConfig {
                 "()V",
                 "",
                 "trackOnActivityResumed",
+                "(Landroid/app/Activity;)V",
+                0, 1,
+                [Opcodes.ALOAD]))
+        ACTIVITY_METHODS.put("onDestroy()V", new TrackMethodCell(
+                "onDestroy",
+                "()V",
+                "",
+                "trackOnActivityDestroyed",
                 "(Landroid/app/Activity;)V",
                 0, 1,
                 [Opcodes.ALOAD]))

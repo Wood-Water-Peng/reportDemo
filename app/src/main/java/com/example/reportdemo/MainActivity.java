@@ -2,7 +2,6 @@ package com.example.reportdemo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -21,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.lib.BaseReportActivity;
 import com.example.lib.RecyclerViewExposureListener;
 import com.example.lib.ViewUtil;
 import com.example.lib.event.ViewClickEvent;
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseReportActivity {
 
     private FragmentA fragmentA;
     private FragmentB fragmentB;
@@ -223,5 +223,8 @@ public class MainActivity extends AppCompatActivity {
 //        }, 1000);
     }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
 }

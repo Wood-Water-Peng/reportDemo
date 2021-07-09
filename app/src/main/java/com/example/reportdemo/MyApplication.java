@@ -8,6 +8,7 @@ import com.example.lib.core.ReportCenterAPI;
 import com.example.lib.core.ReportConfig;
 import com.example.lib.core.ReportHandler;
 import com.example.lib.core.TestReportConfig;
+import com.example.lib.test.TopStreamManager;
 
 /**
  * @Author jacky.peng
@@ -18,6 +19,11 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        //test
+        TopStreamManager.getInstance().registerDefaultStream(ChangeHostProxyImpl.class);
+
+
+
         ReportHandler.getInstance().init(this);
         TestReportConfig configOptions = new TestReportConfig.Builder("test").build();
 
@@ -29,6 +35,10 @@ public class MyApplication extends Application {
         //采集事件模块
         EventGatherModule eventGatherModule = new EventGatherModule();
         eventGatherModule.onCreate(this);
+
+
+
+
     }
 
 

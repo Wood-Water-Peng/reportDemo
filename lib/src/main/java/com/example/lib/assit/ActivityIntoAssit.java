@@ -6,6 +6,7 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.os.Parcelable;
 
+import com.example.lib.ReportLog;
 import com.example.lib.core.DBAdapter;
 import com.example.lib.core.ReportCenterAPI;
 import com.example.lib.event.Event;
@@ -19,7 +20,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 保存activity相关信息
  */
 public class ActivityIntoAssit {
+    //存活的activity
     private AtomicInteger activityCount = new AtomicInteger();
+    //可见的activity
+    private AtomicInteger resumeActivityCount = new AtomicInteger();
     private static ActivityIntoAssit instance;
     private Handler mHandler;
     //app被杀死
@@ -87,16 +91,16 @@ public class ActivityIntoAssit {
     }
 
     public void handleActivityStop(Activity activity) {
-        int count = activityCount.decrementAndGet();
+        int count = resumeActivityCount.decrementAndGet();
+        ReportLog.logD("handleActivityStop resumeActivityCount:" + count);
         if (count == 0) {
-            //暂且认为app结束
-            Message obtain = Message.obtain();
-            obtain.what = MESSAGE_CODE_APP_END;
-            mHandler.sendMessageDelayed(obtain, reportCenterAPI.getSessionTime());
+            //暂且认为app进入后台
+            ReportLog.logD("handleActivityStop: app进入后台");
         }
     }
 
     private void handleAppEnd() {
+        ReportLog.logD("handleActivity appEnd");
         JSONObject object = new JSONObject();
         try {
             long endTime = System.currentTimeMillis();
@@ -111,7 +115,17 @@ public class ActivityIntoAssit {
     }
 
     public void handleActivityResume(Activity activity) {
+//        int count = activityCount.incrementAndGet();
+//        ReportLog.logD("handleActivityResume:" + count);
+//        if (count == 1) {
+//            //暂且认为app启动
+//            handleAppStart(activity);
+//        }
+    }
+
+    public void handleActivityCreated(Activity activity) {
         int count = activityCount.incrementAndGet();
+        ReportLog.logD("handleActivityResume activityCount:" + count);
         if (count == 1) {
             //暂且认为app启动
             handleAppStart(activity);
@@ -119,11 +133,27 @@ public class ActivityIntoAssit {
     }
 
     public void handleActivityStart(Activity activity) {
-//        int count = activityCount.incrementAndGet();
+        int count = resumeActivityCount.incrementAndGet();
+        ReportLog.logD("handleActivityStart resumeActivityCount:" + resumeActivityCount);
+        if (count == 1) {
+            ReportLog.logD("handleActivityStart: app进入前台");
+        }
 
     }
 
+    public void handleActivityDestroyed(Activity activity) {
+        int count = activityCount.decrementAndGet();
+        ReportLog.logD("handleActivityDestroyed activityCount:" + count);
+        if (count == 0) {
+            //暂且认为app结束
+            Message obtain = Message.obtain();
+            obtain.what = MESSAGE_CODE_APP_END;
+            mHandler.sendMessageDelayed(obtain, reportCenterAPI.getSessionTime());
+        }
+    }
+
     public void handleAppStart(Activity activity) {
+        ReportLog.logD("handleActivity appStart");
         JSONObject object = new JSONObject();
         try {
             appStartTime = System.currentTimeMillis();

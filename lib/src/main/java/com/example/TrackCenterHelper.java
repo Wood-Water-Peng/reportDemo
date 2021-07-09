@@ -84,7 +84,11 @@ public class TrackCenterHelper {
 
 
     public static void trackOnActivityCreated(Activity activity, Bundle bundle) {
-//        ReportCenterAPI.sharedInstance().getActivityIntoAssit().handleActivityStart(activity);
+        ReportCenterAPI.sharedInstance().getActivityIntoAssit().handleActivityCreated(activity);
+    }
+
+    public static void trackOnActivityStart(Activity activity) {
+        ReportCenterAPI.sharedInstance().getActivityIntoAssit().handleActivityStart(activity);
     }
 
     public static void trackOnActivityStopped(Activity activity) {
@@ -93,6 +97,10 @@ public class TrackCenterHelper {
 
     public static void trackOnActivityResumed(Activity activity) {
         ReportCenterAPI.sharedInstance().getActivityIntoAssit().handleActivityResume(activity);
+    }
+
+    public static void trackOnActivityDestroyed(Activity activity) {
+        ReportCenterAPI.sharedInstance().getActivityIntoAssit().handleActivityDestroyed(activity);
     }
 
 }

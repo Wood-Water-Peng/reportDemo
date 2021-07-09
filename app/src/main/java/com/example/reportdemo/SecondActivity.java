@@ -1,12 +1,12 @@
 package com.example.reportdemo;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-public class SecondActivity extends AppCompatActivity {
+import com.example.lib.BaseReportActivity;
+
+public class SecondActivity extends BaseReportActivity {
 
     private FragmentA fragmentA;
 
@@ -34,6 +34,11 @@ public class SecondActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     @Override

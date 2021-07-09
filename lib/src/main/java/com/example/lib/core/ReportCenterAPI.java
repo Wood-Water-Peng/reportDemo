@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.webkit.WebResourceResponse;
 
 import com.example.lib.BuildConfig;
+import com.example.lib.ReportLog;
 import com.example.lib.TrackEventManager;
 import com.example.lib.TrackEventManagerThread;
 import com.example.lib.assit.ActivityIntoAssit;
@@ -13,6 +15,7 @@ import com.example.lib.interceptor.IPropertyComposer;
 import com.example.lib.interceptor.LastPropertyComposer;
 import com.example.lib.interceptor.LibInfoPropertyComposer;
 import com.example.lib.interceptor.PropertyComposeChain;
+import com.example.lib.test.ChangeHostProxy;
 import com.example.lib.utils.AppInfoUtils;
 import com.example.lib.utils.DeviceUtils;
 
@@ -38,6 +41,7 @@ public class ReportCenterAPI extends AbstractReportCenter {
     private ActivityIntoAssit activityIntoAssit;
     // Session 时长
     protected int mSessionTime = 5 * 1000;
+
     public ActivityIntoAssit getActivityIntoAssit() {
         return activityIntoAssit;
     }
@@ -60,6 +64,11 @@ public class ReportCenterAPI extends AbstractReportCenter {
         //获取设备信息
         mDeviceInfo = setupDeviceInfo();
         activityIntoAssit = ActivityIntoAssit.getInstance(this);
+
+
+        //测试代码
+        String originUrl = ChangeHostProxy.DEFAULT.interceptRequest("originUrl");
+        ReportLog.logD(originUrl);
     }
 
     /**

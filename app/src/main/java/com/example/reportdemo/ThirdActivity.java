@@ -1,21 +1,20 @@
 package com.example.reportdemo;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TableLayout;
 
+import com.example.lib.BaseReportActivity;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ThirdActivity extends AppCompatActivity {
+public class ThirdActivity extends BaseReportActivity {
 
     private FragmentB fragmentB;
     List<Fragment> fragmentList = new ArrayList<>();

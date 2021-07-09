@@ -52,14 +52,14 @@ class TrackClassVisitor extends ClassVisitor {
         MethodVisitor mv = cv.visitMethod(access, name, descriptor, signature, exceptions);
         nameDesc = name + descriptor;
         //如果该方法为接口中的方法
-       if (TrackUtil.isInstanceOfFragment(mSuperName) && TrackHookConfig.FRAGMENT_METHODS.containsKey(nameDesc)) {
+        if (TrackUtil.isInstanceOfFragment(mSuperName) && TrackHookConfig.FRAGMENT_METHODS.containsKey(nameDesc)) {
             System.out.println("TrackClassVisitor isInstanceOfFragment className:" + mClassName + "---superName:" + mSuperName + "---nameDesc:" + nameDesc);
             //fragment的有效方法
             return new TrackFragmentMethodVisitor(mv, access, name, descriptor, mClassName)
         }
 
 
-        if (TrackUtil.isInstanceOfActivity(mSuperName) && TrackHookConfig.ACTIVITY_METHODS.containsKey(nameDesc)) {
+        if (TrackUtil.isInstanceOfActivity(mSuperName) && mClassName == TrackHookConfig.TRACK_BASE_REPORT_ACTIVITY && TrackHookConfig.ACTIVITY_METHODS.containsKey(nameDesc)) {
             System.out.println("TrackClassVisitor isInstanceOfActivity className:" + mClassName + "---superName:" + mSuperName + "---nameDesc:" + nameDesc);
             //fragment的有效方法
             return new TrackActivityMethodVisitor(mv, access, name, descriptor, mClassName)

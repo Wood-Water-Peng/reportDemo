@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -35,6 +36,12 @@ public class ThirdActivity extends BaseReportActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+        findViewById(R.id.jump2Four).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ThirdActivity.this, DialogTestActivity.class));
             }
         });
         tabLayout = findViewById(R.id.tabLayout);

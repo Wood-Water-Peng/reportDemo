@@ -65,7 +65,10 @@ class TrackClassVisitor extends ClassVisitor {
             return new TrackActivityMethodVisitor(mv, access, name, descriptor, mClassName)
         }
 
+        //Dialog相关
+        if (mSuperName == "android/content/DialogInterface/OnShowListener") {
 
+        }
         return mv
     }
 

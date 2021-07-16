@@ -13,6 +13,7 @@ class TrackHookConfig {
     public final static HashMap<String, TrackMethodCell> FRAGMENT_METHODS = new HashMap<>();
 
     public final static HashMap<String, TrackMethodCell> ACTIVITY_METHODS = new HashMap<>();
+    public final static HashMap<String, TrackMethodCell> DIALOG_METHODS = new HashMap<>();
     public final static String TRACK_API = "com/example/TrackCenterHelper"
     public final static String TRACK_BASE_REPORT_ACTIVITY = "com/example/lib/BaseReportActivity"
 
@@ -129,5 +130,24 @@ class TrackHookConfig {
                 "(Landroid/app/Activity;)V",
                 0, 1,
                 [Opcodes.ALOAD]))
+
+
+        DIALOG_METHODS.put("onShow(Landroid/content/DialogInterface;)V", new TrackMethodCell(
+                "onShow",
+                "(Landroid/content/DialogInterface;)V",
+                "",
+                "trackOnDialogShowed",
+                "(Landroid/app/Dialog;)V",
+                0, 1,
+                [Opcodes.ALOAD]))
+
+        DIALOG_METHODS.put("onClick(Landroid/content/DialogInterface;Ljava/lang/Integer)V", new TrackMethodCell(
+                "onClick",
+                "(Landroid/content/DialogInterface;Ljava/lang/Integer)V",
+                "",
+                "trackOnAlertDialogClicked",
+                "(Landroid/app/Dialog;Ljava/lang/Integer)V",
+                0, 2,
+                [Opcodes.ALOAD, Opcodes.ALOAD]))
     }
 }

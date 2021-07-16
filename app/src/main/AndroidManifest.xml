@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.example.lib.BaseReportActivity"></activity>
+        <activity android:name="com.example.lib.BaseReportActivity" />
         <activity
             android:name=".ThirdActivity"
             android:launchMode="singleTask"
@@ -29,6 +29,7 @@
         </activity>
 
         <service android:name=".FloatingService" />
+        <activity android:name=".DialogTestActivity" />
     </application>
 
 </manifest>

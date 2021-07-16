@@ -1,6 +1,7 @@
 package com.example;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -100,6 +101,11 @@ public class TrackCenterHelper {
     }
 
     public static void trackOnActivityDestroyed(Activity activity) {
+        ReportCenterAPI.sharedInstance().getActivityIntoAssit().handleActivityDestroyed(activity);
+    }
+
+
+    public static void trackOnDialogShowed(DialogInterface dialogInterface) {
         ReportCenterAPI.sharedInstance().getActivityIntoAssit().handleActivityDestroyed(activity);
     }
 

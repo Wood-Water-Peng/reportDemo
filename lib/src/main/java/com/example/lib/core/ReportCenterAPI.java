@@ -11,6 +11,7 @@ import com.example.lib.ReportLog;
 import com.example.lib.TrackEventManager;
 import com.example.lib.TrackEventManagerThread;
 import com.example.lib.assit.ActivityIntoAssit;
+import com.example.lib.assit.DialogReportAssit;
 import com.example.lib.interceptor.IPropertyComposer;
 import com.example.lib.interceptor.LastPropertyComposer;
 import com.example.lib.interceptor.LibInfoPropertyComposer;
@@ -39,11 +40,16 @@ public class ReportCenterAPI extends AbstractReportCenter {
     protected static final Map<Context, ReportCenterAPI> sInstanceMap = new HashMap<>();
     private boolean mIsDebugMode = true;
     private ActivityIntoAssit activityIntoAssit;
+    private DialogReportAssit dialogReportAssit;
     // Session 时长
     protected int mSessionTime = 5 * 1000;
 
     public ActivityIntoAssit getActivityIntoAssit() {
         return activityIntoAssit;
+    }
+
+    public DialogReportAssit getDialogReportAssit() {
+        return dialogReportAssit;
     }
 
     public int getSessionTime() {
@@ -64,6 +70,7 @@ public class ReportCenterAPI extends AbstractReportCenter {
         //获取设备信息
         mDeviceInfo = setupDeviceInfo();
         activityIntoAssit = ActivityIntoAssit.getInstance(this);
+        dialogReportAssit = new DialogReportAssit(this);
 
 
         //测试代码

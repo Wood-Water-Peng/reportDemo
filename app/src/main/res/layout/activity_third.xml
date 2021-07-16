@@ -18,6 +18,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="关闭当前页面" />
+        <Button
+            android:id="@+id/jump2Four"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="跳转到第四页" />
 
         <FrameLayout
             android:id="@+id/content"
